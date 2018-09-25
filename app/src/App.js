@@ -2,7 +2,72 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+
 class App extends Component {
+  constructor(props) {
+    super(props)
+  }
+
+  componentWillMount() {
+
+  }
+
+  onAddressChange(e) {
+
+  }
+
+  handleChange(e) {
+
+  }
+
+  handleTxModalClose() {
+
+  }
+
+  onCompileFromRemix(e) {
+
+  }
+
+  compile() {
+
+  }
+
+  onCompileToRemix(e) {
+
+  }
+
+  onSubmitTx(e) {
+
+  }
+
+  onTx(tx) {
+
+  }
+
+  onValueUpdated(e) {
+
+  }
+
+  onSelectChange(e) {
+
+  }
+
+  handleClose(e) {
+
+  }
+
+  setContract(e) {
+
+  }
+
+  setTx(e) {
+
+  }
+
+  handleClick(e) {
+
+  }
+
   render() {
     return (
       <div className="App">
