@@ -85,36 +85,36 @@ class App extends Component {
   }
 
   compile() {
-    function buf2hex(buffer) { // buffer is an ArrayBuffer
-      return Array.prototype.map.call(new Uint8Array(buffer), x => ('00' + x.toString(16)).slice(-2)).join('');
-    }
+    // function buf2hex(buffer) { // buffer is an ArrayBuffer
+    //   return Array.prototype.map.call(new Uint8Array(buffer), x => ('00' + x.toString(16)).slice(-2)).join('');
+    // }
 
-    let wasm = ''
-    let vyper = ""
-    // nest this into a function
-    try {
-      let module = window.Binaryen.parseText(this.state.vyper)
-      wasm = buf2hex(module.emitBinary())
-    } catch (e) {
-      alert(e)
-      //TODO do something here
-    }
+    // let wasm = ''
+    // let vyper = ""
+    // // nest this into a function
+    // try {
+    //   let module = window.Binaryen.parseText(this.state.vyper)
+    //   wasm = buf2hex(module.emitBinary())
+    // } catch (e) {
+    //   alert(e)
+    //   //TODO do something here
+    // }
 
-    for (let i = 0; i < wasm.length; i += 2) {
-      vyper += "\\" + wasm.slice(i, i + 2)
-    }
+    // for (let i = 0; i < wasm.length; i += 2) {
+    //   vyper += "\\" + wasm.slice(i, i + 2)
+    // }
 
-    console.log(vyper)
-    vyper = `(module (import "ethereum" "finish" (func $finish (param i32 i32))) (memory 100) (data (i32.const 0)  "${vyper}") (export "memory" (memory 0)) (export "main" (func $main)) (func $main (call $finish (i32.const 0) (i32.const ${wasm.length / 2}))))`
+    // console.log(vyper)
+    // vyper = `(module (import "ethereum" "finish" (func $finish (param i32 i32))) (memory 100) (data (i32.const 0)  "${vyper}") (export "memory" (memory 0)) (export "main" (func $main)) (func $main (call $finish (i32.const 0) (i32.const ${wasm.length / 2}))))`
 
-    try {
-      let module = window.Binaryen.parseText(vyper)
-      wasm = buf2hex(module.emitBinary())
-    } catch (e) {
-      alert(e)
-      //TODO do something here
-    }
-    return { 'vyper': vyper, 'wasm': wasm }
+    // try {
+    //   let module = window.Binaryen.parseText(vyper)
+    //   wasm = buf2hex(module.emitBinary())
+    // } catch (e) {
+    //   alert(e)
+    //   //TODO do something here
+    // }
+    // return { 'vyper': vyper, 'wasm': wasm }
   }
 
   onCompileToRemix(e) {
