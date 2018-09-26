@@ -86,7 +86,7 @@ class App extends Component {
 
   compile() {
     const request = new XMLHttpRequest()
-    request.open("POST", `http://localhost:8000/compile`)
+    request.open('POST', 'http://localhost:8000/compile')
     request.setRequestHeader('Content-Type', 'application/json')
     var res = ''
     request.addEventListener("load", (event) => {
