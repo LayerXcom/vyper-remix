@@ -175,7 +175,7 @@ class App extends Component {
        *       "wasm": wasm
        *}
       */
-      extension.call('compiler', 'sendCompilationResult', [this.state.placeholderText, vyper, 'vyper', data]
+      extension.call('compiler', 'sendCompilationResult', [this.state.placeholderText, this.state.vyper, 'vyper', data]
       )
   }
 
