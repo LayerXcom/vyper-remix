@@ -87,7 +87,8 @@ class App extends Component {
   compile() {
     const request = new XMLHttpRequest()
     request.open("POST", `http://localhost:8000/compile`)
-    request.setRequestHeader('Content-Type', 'application/json');
+    request.setRequestHeader('Content-Type', 'application/json')
+    var res = ''
     request.addEventListener("load", (event) => {
         if (event.target.status !== 200) {
             console.log(`${event.target.status}: ${event.target.statusText}`)
@@ -95,7 +96,7 @@ class App extends Component {
         }
         console.log(event.target.status)
         console.log(event.target.responseText)
-        const res = event.target.responseText
+        res = event.target.responseText
     })
     request.addEventListener("error", () => {
         console.error("Network Error")
