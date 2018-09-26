@@ -85,44 +85,68 @@ class App extends Component {
   }
 
   compile() {
-    function buf2hex(buffer) { // buffer is an ArrayBuffer
-      return Array.prototype.map.call(new Uint8Array(buffer), x => ('00' + x.toString(16)).slice(-2)).join('');
-    }
+    const request = new XMLHttpRequest()
+    request.open("POST", `http://localhost:8000/compile`)
+    request.setRequestHeader('Content-Type', 'application/json')
+    var res = ''
+    request.addEventListener("load", (event) => {
+        if (event.target.status !== 200) {
+            console.log(`${event.target.status}: ${event.target.statusText}`)
+            return
+        }
+        console.log(event.target.status)
+        console.log(event.target.responseText)
+        res = event.target.responseText
+    })
+    request.addEventListener("error", () => {
+        console.error("Network Error")
+    })
+    request.send(JSON.stringify({"code": this.state.vyper}))
+    request.abort()
+    return res
+    // function buf2hex(buffer) { // buffer is an ArrayBuffer
+    //   return Array.prototype.map.call(new Uint8Array(buffer), x => ('00' + x.toString(16)).slice(-2)).join('');
+    // }
 
-    let wasm = ''
-    let vyper = ""
-    // nest this into a function
-    try {
-      let module = window.Binaryen.parseText(this.state.vyper)
-      wasm = buf2hex(module.emitBinary())
-    } catch (e) {
-      alert(e)
-      //TODO do something here
-    }
+    // let wasm = ''
+    // let vyper = ""
+    // // nest this into a function
+    // try {
+    //   let module = window.Binaryen.parseText(this.state.vyper)
+    //   wasm = buf2hex(module.emitBinary())
+    // } catch (e) {
+    //   alert(e)
+    //   //TODO do something here
+    // }
 
-    for (let i = 0; i < wasm.length; i += 2) {
-      vyper += "\\" + wasm.slice(i, i + 2)
-    }
+    // for (let i = 0; i < wasm.length; i += 2) {
+    //   vyper += "\\" + wasm.slice(i, i + 2)
+    // }
 
-    console.log(vyper)
-    vyper = `(module (import "ethereum" "finish" (func $finish (param i32 i32))) (memory 100) (data (i32.const 0)  "${vyper}") (export "memory" (memory 0)) (export "main" (func $main)) (func $main (call $finish (i32.const 0) (i32.const ${wasm.length / 2}))))`
+    // console.log(vyper)
+    // vyper = `(module (import "ethereum" "finish" (func $finish (param i32 i32))) (memory 100) (data (i32.const 0)  "${vyper}") (export "memory" (memory 0)) (export "main" (func $main)) (func $main (call $finish (i32.const 0) (i32.const ${wasm.length / 2}))))`
 
-    try {
-      let module = window.Binaryen.parseText(vyper)
-      wasm = buf2hex(module.emitBinary())
-    } catch (e) {
-      alert(e)
-      //TODO do something here
-    }
-    return { 'vyper': vyper, 'wasm': wasm }
+    // try {
+    //   let module = window.Binaryen.parseText(vyper)
+    //   wasm = buf2hex(module.emitBinary())
+    // } catch (e) {
+    //   alert(e)
+    //   //TODO do something here
+    // }
+    // return { 'vyper': vyper, 'wasm': wasm }
   }
 
   onCompileToRemix(e) {
     console.log(this.state.vyper)
     var compileResults = this.compile()
-
-    var vyper = compileResults['vyper']
-    var wasm = compileResults['wasm']
+    // In vyper-serve.py, 
+      // out_dict = {
+      //   'abi': compiler.mk_full_signature(code),
+      //   'bytecode': '0x' + compiler.compile(code).hex(),
+      //   'ir': str(optimizer.optimize(parse_to_lll(code)))
+      // }
+    var abi = compileResults['abi']
+    var bytecode = compileResults['bytecode']
     var data = {
       'sources': {},
       'contracts': {}
@@ -133,21 +157,14 @@ class App extends Component {
     data['contracts'][this.state.placeholderText][this.state.placeholderText.split('/').slice(-1)[0].split('.')[0]] = {
       // The Ethereum Contract ABI. If empty, it is represented as an empty array.
       // See https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI
-      "abi": [
-        {
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "fallback",
-          "inputs": [{ "name": "CallData", "type": "string" }],
-        }
-      ],
+      "abi": abi,
       "evm": {
         "bytecode": {
           "linkReferences": {
 
           },
-          "object": wasm,
-          "opcodes": vyper
+          "object": bytecode,
+          "opcodes": ""
 
         }
       }
@@ -158,7 +175,7 @@ class App extends Component {
        *       "wasm": wasm
        *}
       */
-      extension.call('compiler', 'sendCompilationResult', [this.state.placeholderText, vyper, 'ewasm', data]
+      extension.call('compiler', 'sendCompilationResult', [this.state.placeholderText, this.state.vyper, 'vyper', data]
       )
   }
 
@@ -170,16 +187,21 @@ class App extends Component {
     })
 
     var compileResults = this.compile()
-
-    var vyper = compileResults['vyper']
-    var wasm = compileResults['wasm']
+    // In vyper-serve.py, 
+      // out_dict = {
+      //   'abi': compiler.mk_full_signature(code),
+      //   'bytecode': '0x' + compiler.compile(code).hex(),
+      //   'ir': str(optimizer.optimize(parse_to_lll(code)))
+      // }
+    var abi = compileResults['abi']
+    var bytecode = compileResults['bytecode']
     // this might be a problem, because it triggers a re-render..
     this.setState({ loading: true })
 
     let txn = {}
 
-    if (wasm.length > 0)
-      txn.data = wasm
+    if (bytecode.length > 0)
+      txn.data = bytecode
 
     if (this.state.to)
       txn.to = this.state.to
