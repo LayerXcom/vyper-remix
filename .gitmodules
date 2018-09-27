@@ -1,3 +1,6 @@
 [submodule "app/src/remix-ide"]
 	path = app/src/remix-ide
 	url = git@github.com:ethereum/remix-ide.git
+[submodule "app/src/vyper"]
+	path = app/src/vyper
+	url = git@github.com:ethereum/vyper.git

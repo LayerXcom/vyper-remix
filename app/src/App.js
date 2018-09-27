@@ -31,6 +31,7 @@ class App extends Component {
     this.handleTxModalClose = this.handleTxModalClose.bind(this)
     this.onAddressChange = this.onAddressChange.bind(this)
     this.onValueUpdated = this.onValueUpdated.bind(this)
+    this.sendCompilationResult = this.sendCompilationResult.bind(this)
 
   }
 
@@ -84,11 +85,10 @@ class App extends Component {
     })
   }
 
-  compile() {
+  compile(cb) {
     const request = new XMLHttpRequest()
-    request.open("POST", `http://localhost:8000/compile`)
+    request.open('POST', 'http://localhost:8000/compile')
     request.setRequestHeader('Content-Type', 'application/json')
-    var res = ''
     request.addEventListener("load", (event) => {
         if (event.target.status !== 200) {
             console.log(`${event.target.status}: ${event.target.statusText}`)
@@ -96,55 +96,22 @@ class App extends Component {
         }
         console.log(event.target.status)
         console.log(event.target.responseText)
-        res = event.target.responseText
+        const response = JSON.parse(event.target.responseText)
+        cb(response)
     })
     request.addEventListener("error", () => {
         console.error("Network Error")
     })
     request.send(JSON.stringify({"code": this.state.vyper}))
-    request.abort()
-    return res
-    // function buf2hex(buffer) { // buffer is an ArrayBuffer
-    //   return Array.prototype.map.call(new Uint8Array(buffer), x => ('00' + x.toString(16)).slice(-2)).join('');
-    // }
-
-    // let wasm = ''
-    // let vyper = ""
-    // // nest this into a function
-    // try {
-    //   let module = window.Binaryen.parseText(this.state.vyper)
-    //   wasm = buf2hex(module.emitBinary())
-    // } catch (e) {
-    //   alert(e)
-    //   //TODO do something here
-    // }
-
-    // for (let i = 0; i < wasm.length; i += 2) {
-    //   vyper += "\\" + wasm.slice(i, i + 2)
-    // }
-
-    // console.log(vyper)
-    // vyper = `(module (import "ethereum" "finish" (func $finish (param i32 i32))) (memory 100) (data (i32.const 0)  "${vyper}") (export "memory" (memory 0)) (export "main" (func $main)) (func $main (call $finish (i32.const 0) (i32.const ${wasm.length / 2}))))`
-
-    // try {
-    //   let module = window.Binaryen.parseText(vyper)
-    //   wasm = buf2hex(module.emitBinary())
-    // } catch (e) {
-    //   alert(e)
-    //   //TODO do something here
-    // }
-    // return { 'vyper': vyper, 'wasm': wasm }
   }
 
-  onCompileToRemix(e) {
-    console.log(this.state.vyper)
-    var compileResults = this.compile()
-    // In vyper-serve.py, 
-      // out_dict = {
-      //   'abi': compiler.mk_full_signature(code),
-      //   'bytecode': '0x' + compiler.compile(code).hex(),
-      //   'ir': str(optimizer.optimize(parse_to_lll(code)))
-      // }
+  sendCompilationResult(compileResults) {
+    // In vyper-serve.py,
+    // out_dict = {
+    //   'abi': compiler.mk_full_signature(code),
+    //   'bytecode': '0x' + compiler.compile(code).hex(),
+    //   'ir': str(optimizer.optimize(parse_to_lll(code)))
+    // }
     var abi = compileResults['abi']
     var bytecode = compileResults['bytecode']
     var data = {
@@ -163,20 +130,24 @@ class App extends Component {
           "linkReferences": {
 
           },
-          "object": bytecode,
-          "opcodes": ""
-
+            "object": bytecode,
+            "opcodes": ""
+          }
         }
-      }
-    },
+      },
       /*
        * data['contracts'][this.state.placeholderText]['ewasm'] = {
        *       "vyper": vyper,
        *       "wasm": wasm
        *}
-      */
-      extension.call('compiler', 'sendCompilationResult', [this.state.placeholderText, this.state.vyper, 'vyper', data]
-      )
+       */
+    extension.call('compiler', 'sendCompilationResult', [this.state.placeholderText, this.state.vyper, 'vyper', data]
+    )
+  }
+
+  onCompileToRemix(e) {
+    console.log(this.state.vyper)
+    this.compile(this.sendCompilationResult)
   }
 
   onSubmitTx(e) {
@@ -187,7 +158,7 @@ class App extends Component {
     })
 
     var compileResults = this.compile()
-    // In vyper-serve.py, 
+    // In vyper-serve.py,
       // out_dict = {
       //   'abi': compiler.mk_full_signature(code),
       //   'bytecode': '0x' + compiler.compile(code).hex(),
@@ -360,7 +331,7 @@ class App extends Component {
             this.handleClick()
           }}
         >
-        {({ doFetch }) => (          
+        {({ doFetch }) => (
           <div style={{display: "flex", "flex-direction": "row", "margin-top": "1em"}}>
             <Button disabled={this.state.loading || (typeof this.state.web3 === 'undefined')} variant="contained" color="primary" onClick={() => this.doFetch()}>
               Load file
