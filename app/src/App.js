@@ -31,6 +31,7 @@ class App extends Component {
     this.handleTxModalClose = this.handleTxModalClose.bind(this)
     this.onAddressChange = this.onAddressChange.bind(this)
     this.onValueUpdated = this.onValueUpdated.bind(this)
+    this.sendCompilationResult = this.sendCompilationResult.bind(this)
 
   }
 
