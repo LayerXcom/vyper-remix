@@ -65,12 +65,6 @@ class App extends Component {
   }
 
   sendCompilationResult(compileResults) {
-    // In vyper-serve.py,
-    // out_dict = {
-    //   'abi': compiler.mk_full_signature(code),
-    //   'bytecode': '0x' + compiler.compile(code).hex(),
-    //   'ir': str(optimizer.optimize(parse_to_lll(code)))
-    // }
     var bytecode = compileResults['bytecode']
     var data = {
       'sources': {},
