@@ -124,7 +124,14 @@ class App extends Component {
     data['contracts'][this.state.placeholderText][this.state.placeholderText.split('/').slice(-1)[0].split('.')[0]] = {
       // The Ethereum Contract ABI. If empty, it is represented as an empty array.
       // See https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI
-      "abi": abi,
+      "abi": [
+        {
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "fallback",
+            "inputs": [{"name": "CallData", "type": "string"}],
+        } 
+      ],
       "evm": {
         "bytecode": {
           "linkReferences": {
