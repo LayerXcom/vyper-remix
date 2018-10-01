@@ -126,6 +126,12 @@ class App extends Component {
   }
 
   render() {
+    const {anchorEl} = this.state;
+    if ((typeof this.state.web3) === 'undefined') {
+      this.state.warningText = 'WARNING: Metamask (Web3) not detected!';
+    } else {
+      this.state.warningText = '';
+    }
     return (
       <div className="App">
         <header className="App-header">
