@@ -1,2 +1,5 @@
 # vyper-remix
-Remix Vyper Plugin
+Vyper Plugin for Remix IDE.
+
+## Installation
+```npm install```
