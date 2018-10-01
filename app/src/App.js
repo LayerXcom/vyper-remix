@@ -71,7 +71,6 @@ class App extends Component {
     //   'bytecode': '0x' + compiler.compile(code).hex(),
     //   'ir': str(optimizer.optimize(parse_to_lll(code)))
     // }
-    var abi = compileResults['abi']
     var bytecode = compileResults['bytecode']
     var data = {
       'sources': {},
