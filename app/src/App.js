@@ -101,12 +101,6 @@ class App extends Component {
           }
         }
       },
-      /*
-       * data['contracts'][this.state.placeholderText]['ewasm'] = {
-       *       "vyper": vyper,
-       *       "wasm": wasm
-       *}
-       */
     extension.call('compiler', 'sendCompilationResult', [this.state.placeholderText, this.state.vyper, 'vyper', data]
     )
   }
