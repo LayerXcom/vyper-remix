@@ -4,3 +4,4 @@
 [submodule "app/src/vyper"]
 	path = app/src/vyper
 	url = https://github.com/jacqueswww/vyper
+	branch = add_cors_all_headers
