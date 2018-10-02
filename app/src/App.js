@@ -18,7 +18,6 @@ class App extends Component {
       TxType: 'Contract',
       txStatusText: "Deploy contract",
       loading: false,
-      warningText: '',
       compileDst: "host",
       compilationResult: ''
     }
@@ -141,9 +140,6 @@ class App extends Component {
           />
 
           <div>
-            {(() => {
-              return (!!this.state.warningText) ? <Message warning>{this.state.warningText}</Message> : null
-            })}
             <div style={{ "marginTop": "2em" }}>
               <Button disabled={this.state.loading || (typeof this.state.web3 === 'undefined')} variant="contained" primary onClick={() => this.onCompileFromRemix()}>
                 Compile
@@ -151,12 +147,8 @@ class App extends Component {
             </div>
           </div>
           <div>
-            <p>
-              {this.state.compilationResult.status ? `compilation result: ${this.state.compilationResult.status}` : ''}
-            </p>
-            <p>
-              {this.state.compilationResult.status === 'failed' ? `reason: ${this.state.compilationResult.message}` : ''}
-            </p>
+            {this.state.compilationResult.status ? <Message warning>{`compilation result: ${this.state.compilationResult.status}`}</Message> : ''}
+            {this.state.compilationResult.status === 'failed' ? <Message warning>{`reason: ${this.state.compilationResult.message}`}</Message> : ''}
           </div>
         </div>
       </div>
