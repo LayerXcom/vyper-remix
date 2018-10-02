@@ -5,7 +5,10 @@
   "dependencies": {
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
+    "react-helmet": "^5.2.0",
     "react-scripts": "1.1.5",
+    "semantic-ui-css": "^2.4.0",
+    "semantic-ui-react": "^0.82.5",
     "web3": "^1.0.0-beta.36"
   },
   "scripts": {
