@@ -25,6 +25,13 @@ class App extends Component {
     this.onCompileFromRemix = this.onCompileFromRemix.bind(this)
     this.onCompileSucceeded = this.onCompileSucceeded.bind(this)
     this.onCompileFailed = this.onCompileFailed.bind(this)
+    this.onPluginLoaded = this.onPluginLoaded.bind(this)
+
+    this.onPluginLoaded()
+  }
+
+  onPluginLoaded() {
+    extension.call('app', 'updateTitle', ['remix-vyper'])
   }
 
   onCompileFromRemix(e) {
