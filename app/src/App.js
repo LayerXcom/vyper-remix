@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import './App.css';
 import "./remix-api";
-import { Button, Message, Radio } from 'semantic-ui-react'
-import {Helmet} from 'react-helmet'
+import { Button, Message, Radio, Popup, Icon } from 'semantic-ui-react'
+import { Helmet } from 'react-helmet'
 
 var extension = new window.RemixExtension()
 
@@ -17,7 +16,6 @@ class App extends Component {
       anchorEl: null,
       placeholderText: "Contract.vyper",
       TxType: 'Contract',
-      txModalOpen: false,
       txStatusText: "Deploy contract",
       loading: false,
       warningText: '',
@@ -122,32 +120,44 @@ class App extends Component {
   render() {
     const { anchorEl } = this.state;
     return (
-      <div style={{ "textAlign": "center", backgroundColor: "#F0F3FE" }}>
+      <div style={{ "textAlign": "center" }}>
+        <Helmet>
+          <style>{'body { background-color: #F0F3FE; }'}</style>
+        </Helmet>
         <div style={{ display: "inline" }}>
           <h1 style={{ marginTop: "1em" }}>Vyper plug-in</h1>
           <p>v 1.0.0</p>
         </div>
-        <div>
-          <Radio type="radio" name="compile" value="host" onChange={() => this.setState({ compileDst: "host" })} checked={this.state.compileDst === 'host'} label="Host" style={{ marginRight: "1em" }} />
-          <Radio type="radio" name="compile" value="local" onChange={() => this.setState({ compileDst: "local" })} checked={this.state.compileDst === 'local'} label="Local" />
-        </div>
-        <div>
-          {(() => {
-            return (!!this.state.warningText) ? <Message warning>{this.state.warningText}</Message> : null
-          })}
-          <div style={{ "marginTop": "1em" }}>
-            <Button disabled={this.state.loading || (typeof this.state.web3 === 'undefined')} variant="contained" primary onClick={() => this.onCompileFromRemix()}>
-              Compile
+        <div style={{ background: "white", margin: "1em 2em", padding: "1.5em 0" }}>
+          <Radio type="radio" name="compile" value="host" onChange={() => this.setState({ compileDst: "host" })} checked={this.state.compileDst === 'host'} label="Host" />
+          <Popup trigger={<Icon name="question circle" />}
+            content="The default theme's basic popup removes the pointing arrow."
+            basic
+          />
+          <Radio type="radio" name="compile" value="local" onChange={() => this.setState({ compileDst: "local" })} checked={this.state.compileDst === 'local'} label="Local" style={{ marginLeft: "1em" }} />
+          <Popup trigger={<Icon name="question circle" />}
+            content="The default theme's basic popup removes the pointing arrow."
+            basic
+          />
+
+          <div>
+            {(() => {
+              return (!!this.state.warningText) ? <Message warning>{this.state.warningText}</Message> : null
+            })}
+            <div style={{ "marginTop": "2em" }}>
+              <Button disabled={this.state.loading || (typeof this.state.web3 === 'undefined')} variant="contained" primary onClick={() => this.onCompileFromRemix()}>
+                Compile
             </Button>
+            </div>
           </div>
-        </div>
-        <div>
-          <p>
-            {this.state.compilationResult.status ? `compilation result: ${this.state.compilationResult.status}` : ''}
-          </p>
-          <p>
-            {this.state.compilationResult.status === 'failed' ? `reason: ${this.state.compilationResult.message}` : ''}
-          </p>
+          <div>
+            <p>
+              {this.state.compilationResult.status ? `compilation result: ${this.state.compilationResult.status}` : ''}
+            </p>
+            <p>
+              {this.state.compilationResult.status === 'failed' ? `reason: ${this.state.compilationResult.message}` : ''}
+            </p>
+          </div>
         </div>
       </div>
     );
