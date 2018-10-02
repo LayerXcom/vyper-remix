@@ -23,7 +23,6 @@ class App extends Component {
     }
 
     this.onCompileFromRemix = this.onCompileFromRemix.bind(this)
-    this.onCompileToRemix = this.onCompileToRemix.bind(this)
     this.sendCompilationResult = this.sendCompilationResult.bind(this)
 
   }
@@ -42,6 +41,8 @@ class App extends Component {
         })
       })
     })
+    console.log(this.state.vyper)
+    this.compile(this.sendCompilationResult)
   }
 
   compile(cb) {
@@ -98,11 +99,6 @@ class App extends Component {
     )
   }
 
-  onCompileToRemix(e) {
-    console.log(this.state.vyper)
-    this.compile(this.sendCompilationResult)
-  }
-
   componentWillMount() {
     window.addEventListener('load', () => {
       this.setState({
@@ -129,10 +125,7 @@ class App extends Component {
           <h3 style={{ "text-align": "left", "color": "red" }}>{this.state.warningText}</h3>
           <div style={{ display: "flex", "flex-direction": "row", "margin-top": "1em" }}>
             <button disabled={this.state.loading || (typeof this.state.web3 === 'undefined')} variant="contained" color="primary" onClick={() => this.onCompileFromRemix()}>
-              Get file from remix
-            </button>
-            <button disabled={this.state.loading || (typeof this.state.web3 === 'undefined')} variant="contained" color="primary" onClick={() => this.onCompileToRemix()} style={{ "margin-left": "20px" }}>
-              Send contract to remix
+              Compile Vyper code!!!
             </button>
           </div>
       </div>
