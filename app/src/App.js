@@ -20,7 +20,8 @@ class App extends Component {
       txStatusText: "Deploy contract",
       loading: false,
       warningText: '',
-      compileDst: "host"
+      compileDst: "host",
+      compilationResult: ''
     }
 
     this.onCompileFromRemix = this.onCompileFromRemix.bind(this)
@@ -140,6 +141,14 @@ class App extends Component {
               Compile Vyper code!!!
             </button>
           </div>
+        </div>
+        <div>
+          <p>
+            {this.state.compilationResult.status ? `compilation result: ${this.state.compilationResult.status}`: ''}
+          </p>
+          <p>
+            {this.state.compilationResult.status === 'failed' ? `reason: ${this.state.compilationResult.message}` : '' }
+          </p>
         </div>
       </div>
     );
