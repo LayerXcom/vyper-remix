@@ -19,12 +19,12 @@ class App extends Component {
       txModalOpen: false,
       txStatusText: "Deploy contract",
       loading: false,
-      warningText: ''
+      warningText: '',
+      compileDst: "host"
     }
 
     this.onCompileFromRemix = this.onCompileFromRemix.bind(this)
     this.sendCompilationResult = this.sendCompilationResult.bind(this)
-
   }
 
   onCompileFromRemix(e) {
@@ -50,19 +50,19 @@ class App extends Component {
     request.open('POST', 'http://localhost:8000/compile')
     request.setRequestHeader('Content-Type', 'application/json')
     request.addEventListener("load", (event) => {
-        if (event.target.status !== 200) {
-            console.log(`${event.target.status}: ${event.target.statusText}`)
-            return
-        }
-        console.log(event.target.status)
-        console.log(event.target.responseText)
-        const response = JSON.parse(event.target.responseText)
-        cb(response)
+      if (event.target.status !== 200) {
+        console.log(`${event.target.status}: ${event.target.statusText}`)
+        return
+      }
+      console.log(event.target.status)
+      console.log(event.target.responseText)
+      const response = JSON.parse(event.target.responseText)
+      cb(response)
     })
     request.addEventListener("error", () => {
-        console.error("Network Error")
+      console.error("Network Error")
     })
-    request.send(JSON.stringify({"code": this.state.vyper}))
+    request.send(JSON.stringify({ "code": this.state.vyper }))
   }
 
   sendCompilationResult(compileResults) {
@@ -79,24 +79,24 @@ class App extends Component {
       // See https://github.com/ethereum/wiki/wiki/Ethereum-Contract-ABI
       "abi": [
         {
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "fallback",
-            "inputs": [{"name": "CallData", "type": "string"}],
-        } 
+          "payable": false,
+          "stateMutability": "nonpayable",
+          "type": "fallback",
+          "inputs": [{ "name": "CallData", "type": "string" }],
+        }
       ],
       "evm": {
         "bytecode": {
           "linkReferences": {
 
           },
-            "object": bytecode,
-            "opcodes": ""
-          }
+          "object": bytecode,
+          "opcodes": ""
         }
-      },
-    extension.call('compiler', 'sendCompilationResult', [this.state.placeholderText, this.state.vyper, 'vyper', data]
-    )
+      }
+    },
+      extension.call('compiler', 'sendCompilationResult', [this.state.placeholderText, this.state.vyper, 'vyper', data]
+      )
   }
 
   componentWillMount() {
@@ -109,7 +109,7 @@ class App extends Component {
   }
 
   render() {
-    const {anchorEl} = this.state;
+    const { anchorEl } = this.state;
     if ((typeof this.state.web3) === 'undefined') {
       this.state.warningText = 'WARNING: Metamask (Web3) not detected!';
     } else {
@@ -118,9 +118,12 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Welcome to the Vyper!</h1>
         </header>
+        <div>
+          <input type="radio" name="compile" value="host" onChange={() => this.setState({ compileDst: "host" })} checked={this.state.compileDst === 'host'} />Host
+          <input type="radio" name="compile" value="local" onChange={() => this.setState({ compileDst: "local" })} checked={this.state.compileDst === 'local'} />Local
+        </div>
         <div style={{ display: "flex", "flex-direction": "column", margin: "auto", width: "600px" }} >
           <h3 style={{ "text-align": "left", "color": "red" }}>{this.state.warningText}</h3>
           <div style={{ display: "flex", "flex-direction": "row", "margin-top": "1em" }}>
@@ -128,8 +131,8 @@ class App extends Component {
               Compile Vyper code!!!
             </button>
           </div>
+        </div>
       </div>
-    </div>
     );
   }
 }
