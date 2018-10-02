@@ -46,8 +46,14 @@ class App extends Component {
   }
 
   compile(cb) {
+    let compileURL
     const request = new XMLHttpRequest()
-    request.open('POST', 'http://localhost:8000/compile')
+    if (this.state === "host") {
+      compileURL = ''
+    } else if (this.state === "local") {
+      compileURL = 'http://localhost:8000/compile'
+    }
+    request.open('POST', compileURL)
     request.setRequestHeader('Content-Type', 'application/json')
     request.addEventListener("load", (event) => {
       if (event.target.status !== 200) {
