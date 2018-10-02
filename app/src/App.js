@@ -131,12 +131,12 @@ class App extends Component {
         <div style={{ background: "white", margin: "1em 2em", padding: "1.5em 0" }}>
           <Radio type="radio" name="compile" value="host" onChange={() => this.setState({ compileDst: "host" })} checked={this.state.compileDst === 'host'} label="Host" />
           <Popup trigger={<Icon name="question circle" />}
-            content="The default theme's basic popup removes the pointing arrow."
+            content="[Recommended] You can compile the vyper code using remote server."
             basic
           />
           <Radio type="radio" name="compile" value="local" onChange={() => this.setState({ compileDst: "local" })} checked={this.state.compileDst === 'local'} label="Local" style={{ marginLeft: "1em" }} />
           <Popup trigger={<Icon name="question circle" />}
-            content="The default theme's basic popup removes the pointing arrow."
+            content="You can use your own compiler using your localhost server."
             basic
           />
 
