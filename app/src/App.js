@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import "./remix-api";
+import { Button, Message, Radio } from 'semantic-ui-react'
+import {Helmet} from 'react-helmet'
 
 var extension = new window.RemixExtension()
 
@@ -59,11 +60,11 @@ class App extends Component {
     request.setRequestHeader('Content-Type', 'application/json')
     request.addEventListener("load", (event) => {
       const response = JSON.parse(event.target.responseText)
-        if (event.target.statusCode == 200) {
-          onCompileSucceeded(response)
-        } else {
-          onCompileFailed(response)
-        }
+      if (event.target.statusCode == 200) {
+        onCompileSucceeded(response)
+      } else {
+        onCompileFailed(response)
+      }
     })
     request.addEventListener("error", () => {
       console.error("Network Error")
@@ -72,7 +73,7 @@ class App extends Component {
   }
 
   onCompileFailed(compileResults) {
-    this.setState({compilationResult: compileResults})
+    this.setState({ compilationResult: compileResults })
   }
 
   onCompileSucceeded(compileResults) {
@@ -120,34 +121,32 @@ class App extends Component {
 
   render() {
     const { anchorEl } = this.state;
-    if ((typeof this.state.web3) === 'undefined') {
-      this.state.warningText = 'WARNING: Metamask (Web3) not detected!';
-    } else {
-      this.state.warningText = '';
-    }
     return (
-      <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">Welcome to the Vyper!</h1>
-        </header>
-        <div>
-          <input type="radio" name="compile" value="host" onChange={() => this.setState({ compileDst: "host" })} checked={this.state.compileDst === 'host'} />Host
-          <input type="radio" name="compile" value="local" onChange={() => this.setState({ compileDst: "local" })} checked={this.state.compileDst === 'local'} />Local
+      <div style={{ "textAlign": "center", backgroundColor: "#F0F3FE" }}>
+        <div style={{ display: "inline" }}>
+          <h1 style={{ marginTop: "1em" }}>Vyper plug-in</h1>
+          <p>v 1.0.0</p>
         </div>
-        <div style={{ display: "flex", "flex-direction": "column", margin: "auto", width: "600px" }} >
-          <h3 style={{ "text-align": "left", "color": "red" }}>{this.state.warningText}</h3>
-          <div style={{ display: "flex", "flex-direction": "row", "margin-top": "1em" }}>
-            <button disabled={this.state.loading || (typeof this.state.web3 === 'undefined')} variant="contained" color="primary" onClick={() => this.onCompileFromRemix()}>
-              Compile Vyper code!!!
-            </button>
+        <div>
+          <Radio type="radio" name="compile" value="host" onChange={() => this.setState({ compileDst: "host" })} checked={this.state.compileDst === 'host'} label="Host" style={{ marginRight: "1em" }} />
+          <Radio type="radio" name="compile" value="local" onChange={() => this.setState({ compileDst: "local" })} checked={this.state.compileDst === 'local'} label="Local" />
+        </div>
+        <div>
+          {(() => {
+            return (!!this.state.warningText) ? <Message warning>{this.state.warningText}</Message> : null
+          })}
+          <div style={{ "marginTop": "1em" }}>
+            <Button disabled={this.state.loading || (typeof this.state.web3 === 'undefined')} variant="contained" primary onClick={() => this.onCompileFromRemix()}>
+              Compile
+            </Button>
           </div>
         </div>
         <div>
           <p>
-            {this.state.compilationResult.status ? `compilation result: ${this.state.compilationResult.status}`: ''}
+            {this.state.compilationResult.status ? `compilation result: ${this.state.compilationResult.status}` : ''}
           </p>
           <p>
-            {this.state.compilationResult.status === 'failed' ? `reason: ${this.state.compilationResult.message}` : '' }
+            {this.state.compilationResult.status === 'failed' ? `reason: ${this.state.compilationResult.message}` : ''}
           </p>
         </div>
       </div>
