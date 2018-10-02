@@ -23,7 +23,8 @@ class App extends Component {
     }
 
     this.onCompileFromRemix = this.onCompileFromRemix.bind(this)
-    this.sendCompilationResult = this.sendCompilationResult.bind(this)
+    this.onCompileSucceeded = this.onCompileSucceeded.bind(this)
+    this.onCompileFailed = this.onCompileFailed.bind(this)
 
   }
 
@@ -42,22 +43,20 @@ class App extends Component {
       })
     })
     console.log(this.state.vyper)
-    this.compile(this.sendCompilationResult)
+    this.compile(this.onCompileSucceeded, this.onCompileFailed)
   }
 
-  compile(cb) {
+  compile(onCompileSucceeded, onCompileFailed) {
     const request = new XMLHttpRequest()
     request.open('POST', 'http://localhost:8000/compile')
     request.setRequestHeader('Content-Type', 'application/json')
     request.addEventListener("load", (event) => {
-        if (event.target.status !== 200) {
-            console.log(`${event.target.status}: ${event.target.statusText}`)
-            return
+      const response = JSON.parse(event.target.responseText)
+        if (event.target.statusCode == 200) {
+          onCompileSucceeded(response)
+        } else {
+          onCompileFailed(response)
         }
-        console.log(event.target.status)
-        console.log(event.target.responseText)
-        const response = JSON.parse(event.target.responseText)
-        cb(response)
     })
     request.addEventListener("error", () => {
         console.error("Network Error")
@@ -65,7 +64,11 @@ class App extends Component {
     request.send(JSON.stringify({"code": this.state.vyper}))
   }
 
-  sendCompilationResult(compileResults) {
+  onCompileFailed(compileResults) {
+    this.setState({compilationResult: compileResults})
+  }
+
+  onCompileSucceeded(compileResults) {
     var bytecode = compileResults['bytecode']
     var data = {
       'sources': {},
@@ -83,7 +86,7 @@ class App extends Component {
             "stateMutability": "nonpayable",
             "type": "fallback",
             "inputs": [{"name": "CallData", "type": "string"}],
-        } 
+        }
       ],
       "evm": {
         "bytecode": {
