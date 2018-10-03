@@ -54,7 +54,8 @@ class App extends Component {
     request.setRequestHeader('Content-Type', 'application/json')
     request.addEventListener("load", (event) => {
       const response = JSON.parse(event.target.responseText)
-      if (event.target.statusCode == 200) {
+      if (event.target.status == 200) {
+        console.log(response)
         onCompileSucceeded(response)
       } else {
         onCompileFailed(response)
