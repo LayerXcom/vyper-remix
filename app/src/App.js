@@ -60,8 +60,9 @@ class App extends Component {
     request.open('POST', compileURL)
     request.setRequestHeader('Content-Type', 'application/json')
     request.addEventListener("load", (event) => {
-      switch (request.status) {
-        case 0:
+      switch (event.target.status) {
+        case 200:
+        case 400:
           const response = JSON.parse(event.target.responseText)
           if (event.target.status == 200) {
             console.log(response)
@@ -76,7 +77,7 @@ class App extends Component {
           break
 
         default:
-          onCompileFailed({status: 'failed', message: `Unknown error has occured at "${compileURL}".`})
+          onCompileFailed({status: 'failed', message: `Unknown error has occured at "${compileURL}". ${event.target.responseText}`})
           break
       }
     })
