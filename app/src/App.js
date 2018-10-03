@@ -39,10 +39,10 @@ class App extends Component {
         plugin.setState({
           vyper: result[0]
         })
+        console.log(plugin.state.vyper)
+        plugin.compile(plugin.onCompileSucceeded, plugin.onCompileFailed)
       })
     })
-    console.log(this.state.vyper)
-    this.compile(this.onCompileSucceeded, this.onCompileFailed)
   }
 
   compile(onCompileSucceeded, onCompileFailed) {
