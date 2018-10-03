@@ -105,6 +105,34 @@ class App extends Component {
       )
   }
 
+  renderErrorMessage(fileName, result) {
+    if(result.status == 'success') {
+      return (
+        <div class="ui positive message">
+          <div class="header">
+            success!
+          </div>
+        </div>
+      )
+    } else if(result.column && result.line) {
+      const messages = this.state.compilationResult.message.split(/\r\n|\r|\n/)
+      return (
+        <div class="ui error message">
+          <div class="header">
+            failed!
+          </div>
+          <p />
+          <div class="content">
+            {`${fileName}:${result.line}:${result.column}`}
+            <p>
+              {messages.map(m => <span>{m}<br /></span>)}
+            </p>
+          </div>
+        </div>
+      )
+    }
+  }
+
   render() {
     return (
       <div style={{ "textAlign": "center" }}>
@@ -134,9 +162,9 @@ class App extends Component {
             </Button>
             </div>
           </div>
-          <div style={{ marginTop: "1em" }}>
-            {this.state.compilationResult.status ? <Message warning>{`compilation result: ${this.state.compilationResult.status}`}</Message> : ''}
-            {this.state.compilationResult.status === 'failed' ? <Message warning>{`reason: ${this.state.compilationResult.message}`}</Message> : ''}
+          <p />
+          <div>
+            {this.renderErrorMessage(this.state.placeholderText, this.state.compilationResult)}
           </div>
         </div>
       </div>
