@@ -60,16 +60,28 @@ class App extends Component {
     request.open('POST', compileURL)
     request.setRequestHeader('Content-Type', 'application/json')
     request.addEventListener("load", (event) => {
-      const response = JSON.parse(event.target.responseText)
-      if (event.target.status == 200) {
-        console.log(response)
-        onCompileSucceeded(response)
-      } else {
-        onCompileFailed(response)
+      switch (request.status) {
+        case 0:
+          const response = JSON.parse(event.target.responseText)
+          if (event.target.status == 200) {
+            console.log(response)
+            onCompileSucceeded(response)
+          } else {
+            onCompileFailed(response)
+          }
+          break
+
+        case 404:
+          onCompileFailed({status: 'failed', message: `Vyper compiler not found at "${compileURL}".`})
+          break
+
+        default:
+          onCompileFailed({status: 'failed', message: `Unknown error has occured at "${compileURL}".`})
+          break
       }
     })
     request.addEventListener("error", () => {
-      console.error("Network Error")
+      onCompileFailed({status: 'failed', message: `Network error has occured at "${compileURL}".`})
     })
     request.send(JSON.stringify({ "code": this.state.vyper }))
   }
@@ -122,7 +134,7 @@ class App extends Component {
           </div>
         </div>
       )
-    } else if(result.column && result.line) {
+    } else if(result.status == 'failed' && result.column && result.line) {
       const messages = this.state.compilationResult.message.split(/\r\n|\r|\n/)
       return (
         <div class="ui error message">
@@ -135,6 +147,18 @@ class App extends Component {
             <p>
               {messages.map(m => <span>{m}<br /></span>)}
             </p>
+          </div>
+        </div>
+      )
+    } else if(result.status == 'failed'){
+      return (
+        <div class="ui error message">
+          <div class="header">
+            failed!
+          </div>
+          <p />
+          <div class="content">
+            {this.state.compilationResult.message}
           </div>
         </div>
       )
