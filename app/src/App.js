@@ -79,6 +79,7 @@ class App extends Component {
   }
 
   onCompileSucceeded(compileResults) {
+    this.setState({ compilationResult: compileResults })
     var bytecode = compileResults['bytecode']
     var data = {
       'sources': {},
@@ -112,7 +113,7 @@ class App extends Component {
       )
   }
 
-  renderErrorMessage(fileName, result) {
+  renderCompilationResult(fileName, result) {
     if(result.status == 'success') {
       return (
         <div class="ui positive message">
@@ -171,7 +172,7 @@ class App extends Component {
           </div>
           <p />
           <div>
-            {this.renderErrorMessage(this.state.placeholderText, this.state.compilationResult)}
+            {this.renderCompilationResult(this.state.placeholderText, this.state.compilationResult)}
           </div>
         </div>
       </div>
