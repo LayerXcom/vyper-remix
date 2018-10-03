@@ -11,8 +11,6 @@ class App extends Component {
 
     this.state = {
       vyper: '',
-      vyperURL: '',
-      remotevyperURL: false,
       placeholderText: "Contract.vyper",
       TxType: 'Contract',
       txStatusText: "Deploy contract",
@@ -26,8 +24,8 @@ class App extends Component {
     this.onCompileFailed = this.onCompileFailed.bind(this)
   }
 
-  onCompileFromRemix(e) {
-    var plugin = this
+  onCompileFromRemix() {
+    const plugin = this
     extension.call('editor', 'getCurrentFile', [], function (error, result) {
       console.log(error, result)
       plugin.setState({
