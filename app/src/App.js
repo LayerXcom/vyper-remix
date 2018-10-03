@@ -13,7 +13,6 @@ class App extends Component {
       vyper: '',
       vyperURL: '',
       remotevyperURL: false,
-      anchorEl: null,
       placeholderText: "Contract.vyper",
       TxType: 'Contract',
       txStatusText: "Deploy contract",
@@ -107,17 +106,7 @@ class App extends Component {
       )
   }
 
-  componentWillMount() {
-    window.addEventListener('load', () => {
-      this.setState({
-        web3: window.web3
-      })
-    })
-    this.setState({ anchorEl: null });
-  }
-
   render() {
-    const { anchorEl } = this.state;
     return (
       <div style={{ "textAlign": "center" }}>
         <Helmet>
@@ -141,12 +130,12 @@ class App extends Component {
 
           <div>
             <div style={{ "marginTop": "2em" }}>
-              <Button disabled={this.state.loading || (typeof this.state.web3 === 'undefined')} variant="contained" primary onClick={() => this.onCompileFromRemix()}>
+              <Button disabled={this.state.loading} primary onClick={() => this.onCompileFromRemix()}>
                 Compile
             </Button>
             </div>
           </div>
-          <div>
+          <div style={{ marginTop: "1em" }}>
             {this.state.compilationResult.status ? <Message warning>{`compilation result: ${this.state.compilationResult.status}`}</Message> : ''}
             {this.state.compilationResult.status === 'failed' ? <Message warning>{`reason: ${this.state.compilationResult.message}`}</Message> : ''}
           </div>
