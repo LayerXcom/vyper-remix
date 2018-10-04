@@ -33,23 +33,20 @@ class App extends Component {
 
   onCompileFromRemix() {
     const plugin = this
-    extension.call('editor', 'getCurrentFile', [], function (error, result) {
+    plugin.result = {}
+    extension.call('editor', 'getCurrentFile', [], (error, result) => {
       console.log(error, result)
-      plugin.setState({
-        placeholderText: result[0]
-      })
+      plugin.result.placeholderText = result[0]
       extension.call('editor', 'getFile', result, (error, result) => {
         console.log(result)
-        plugin.setState({
-          vyper: result[0]
-        })
-        console.log(plugin.state.vyper)
-        plugin.compile(plugin.onCompileSucceeded, plugin.onCompileFailed)
+        plugin.result.vyper = result[0]
+        plugin.setState(plugin.result)
+        plugin.compile(plugin.onCompileSucceeded, plugin.onCompileFailed, plugin.result)
       })
     })
   }
 
-  compile(onCompileSucceeded, onCompileFailed) {
+  compile(onCompileSucceeded, onCompileFailed, result) {
     let compileURL
     const request = new XMLHttpRequest()
     if (this.state.compileDst === "host") {
@@ -84,7 +81,7 @@ class App extends Component {
     request.addEventListener("error", () => {
       onCompileFailed({status: 'failed', message: `Network error has occurred at "${compileURL}".`})
     })
-    request.send(JSON.stringify({ "code": this.state.vyper }))
+    request.send(JSON.stringify({ "code": result.vyper }))
   }
 
   onCompileFailed(compileResults) {
