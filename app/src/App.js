@@ -128,7 +128,11 @@ class App extends Component {
       return (
         <div class="ui positive message">
           <div class="header">
-            success!
+            bytecode
+          </div>
+          <p />
+          <div class="content" style={{"word-wrap": "break-word"}}>
+            {this.state.compilationResult.bytecode}
           </div>
         </div>
       )
