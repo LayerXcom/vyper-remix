@@ -11,7 +11,7 @@ class App extends Component {
 
     this.state = {
       vyper: '',
-      placeholderText: "Contract.vyper",
+      placeholderText: "Contract.vy",
       TxType: 'Contract',
       txStatusText: "Deploy contract",
       loading: false,
