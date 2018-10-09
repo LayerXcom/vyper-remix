@@ -11,9 +11,7 @@ class App extends Component {
 
     this.state = {
       vyper: '',
-      placeholderText: "Contract.vyper",
-      TxType: 'Contract',
-      txStatusText: "Deploy contract",
+      placeholderText: "Contract.vy",
       loading: false,
       compileDst: "host",
       compilationResult: ''
@@ -47,6 +45,11 @@ class App extends Component {
   }
 
   compile(onCompileSucceeded, onCompileFailed, result) {
+    const extension = this.state.placeholderText.split('.')[1]
+    if (extension !== 'vy') {
+      onCompileFailed({status: 'failed', message: `"${extension}" isn't Vyper extension.`})
+      return
+    }
     let compileURL
     const request = new XMLHttpRequest()
     if (this.state.compileDst === "host") {
