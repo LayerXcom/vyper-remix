@@ -19,6 +19,7 @@ class App extends Component {
 
     this.onCompileFromRemix = this.onCompileFromRemix.bind(this)
     this.onCompileSucceeded = this.onCompileSucceeded.bind(this)
+    this.highlightErrors = this.highlightErrors.bind(this)
     this.onCompileFailed = this.onCompileFailed.bind(this)
     this.onPluginLoaded = this.onPluginLoaded.bind(this)
 
@@ -68,7 +69,7 @@ class App extends Component {
             console.log(response)
             onCompileSucceeded(response)
           } else {
-            onCompileFailed(response)
+            onCompileFailed(response, result.placeholderText)
           }
           break
 
@@ -87,8 +88,17 @@ class App extends Component {
     request.send(JSON.stringify({ "code": result.vyper }))
   }
 
-  onCompileFailed(compileResults) {
+  highlightErrors(fileName, line, color) {
+    const lineColumnPos = {start: {line: line - 1}, end: {line: line - 1}}
+    const obj = [JSON.stringify(lineColumnPos), fileName, color]
+    extension.call('editor', 'highlight', obj, (error, result) => {})
+  }
+
+  onCompileFailed(compileResults, fileName) {
     this.setState({ compilationResult: compileResults })
+    if(fileName && compileResults.line) {
+      this.highlightErrors(fileName, compileResults.line, '#e0b4b4')
+    }
   }
 
   onCompileSucceeded(compileResults) {
