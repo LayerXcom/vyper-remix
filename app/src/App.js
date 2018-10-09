@@ -103,6 +103,7 @@ class App extends Component {
 
   onCompileSucceeded(compileResults) {
     this.setState({ compilationResult: compileResults })
+    extension.call('editor', 'discardHighlight', [], (error, result) => {})
     var abi = compileResults['abi']
     var bytecode = compileResults['bytecode']
     var data = {
