@@ -47,6 +47,11 @@ class App extends Component {
   }
 
   compile(onCompileSucceeded, onCompileFailed, result) {
+    const extension = this.state.placeholderText.split('.')[1]
+    if (extension !== 'vy') {
+      onCompileFailed({status: 'failed', message: `"${extension}" isn't Vyper extension.`})
+      return
+    }
     let compileURL
     const request = new XMLHttpRequest()
     if (this.state.compileDst === "host") {
