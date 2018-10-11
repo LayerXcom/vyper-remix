@@ -105,7 +105,7 @@ class App extends Component {
     this.setState({ compilationResult: compileResults })
     extension.call('editor', 'discardHighlight', [], (error, result) => {})
     var abi = compileResults['abi']
-    var bytecode = compileResults['bytecode']
+    var bytecode = compileResults['bytecode'].replace('0x','')
     var data = {
       'sources': {},
       'contracts': {}
