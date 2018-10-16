@@ -13,7 +13,7 @@ class App extends Component {
       vyper: '',
       placeholderText: "Contract.vy",
       loading: false,
-      compileDst: "host",
+      compileDst: "remote",
       compilationResult: ''
     }
 
@@ -53,7 +53,7 @@ class App extends Component {
     }
     let compileURL
     const request = new XMLHttpRequest()
-    if (this.state.compileDst === "host") {
+    if (this.state.compileDst === "remote") {
       compileURL = ''
     } else if (this.state.compileDst === "local") {
       compileURL = 'http://localhost:8000/compile'
@@ -186,14 +186,14 @@ class App extends Component {
           <p>v 1.0.0</p>
         </div>
         <div style={{ background: "white", margin: "1em 2em", padding: "1.5em 0" }}>
-          <Radio type="radio" name="compile" value="host" onChange={() => this.setState({ compileDst: "host" })} checked={this.state.compileDst === 'host'} label="Host" />
+          <Radio type="radio" name="compile" value="remote" onChange={() => this.setState({ compileDst: "remote" })} checked={this.state.compileDst === 'remote'} label="Remote" />
           <Popup trigger={<Icon name="question circle" />}
-            content="You can compile the vyper code using remote server."
+            content="You can use remote compiler"
             basic
           />
           <Radio type="radio" name="compile" value="local" onChange={() => this.setState({ compileDst: "local" })} checked={this.state.compileDst === 'local'} label="Local" style={{ marginLeft: "1em" }} />
           <Popup trigger={<Icon name="question circle" />}
-            content="You can use your own compiler using your localhost server."
+            content="You can use your own compiler at localhost:8000"
             basic
           />
 
