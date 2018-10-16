@@ -202,6 +202,11 @@ class App extends Component {
               <Button disabled={this.state.loading} primary onClick={() => this.onCompileFromRemix()}>
                 Compile
             </Button>
+            <Popup trigger={<Icon name="question circle" />}>  
+                <div>1. Write vyper code(.vy) in the editor</div>
+                <div>2. Click Compile button</div>
+                <div>3. Now you can deploy the contract in the Run tab!</div>
+              </Popup>
             </div>
           </div>
           <p />
