@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import "./remix-api";
 import { Button, Message, Radio, Popup, Icon } from 'semantic-ui-react'
 import { Helmet } from 'react-helmet'
+import {CopyToClipboard} from 'react-copy-to-clipboard'
 
 var extension = new window.RemixExtension()
 
@@ -14,7 +15,8 @@ class App extends Component {
       placeholderText: "Contract.vy",
       loading: false,
       compileDst: "remote",
-      compilationResult: ''
+      compilationResult: '',
+      copied: false
     }
 
     this.onCompileFromRemix = this.onCompileFromRemix.bind(this)
@@ -36,6 +38,7 @@ class App extends Component {
     extension.call('editor', 'getCurrentFile', [], (error, result) => {
       console.log(error, result)
       plugin.result.placeholderText = result[0]
+      plugin.result.copied = false
       extension.call('editor', 'getFile', result, (error, result) => {
         console.log(result)
         plugin.result.vyper = result[0]
@@ -144,12 +147,14 @@ class App extends Component {
       return (
         <div class="ui positive message">
           <div class="header">
-            bytecode
+            succeeded!
           </div>
           <p />
-          <div class="content" style={{"word-wrap": "break-word"}}>
-            {this.state.compilationResult.bytecode}
-          </div>
+          <CopyToClipboard text={this.state.compilationResult.bytecode} 
+          onCopy={() => this.setState({copied: true})}>
+          <button>Copy bytecode to clipboard</button>
+          </CopyToClipboard>
+          {this.state.copied ? <span style={{color: 'red'}}>Copied.</span> : null}
         </div>
       )
     } else if(result.status == 'failed' && result.column && result.line) {

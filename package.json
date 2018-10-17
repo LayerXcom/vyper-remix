@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "react": "^16.5.2",
+    "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.5.2",
     "react-helmet": "^5.2.0",
     "react-scripts": "1.1.5",
