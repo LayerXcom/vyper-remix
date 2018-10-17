@@ -106,6 +106,7 @@ class App extends Component {
     extension.call('editor', 'discardHighlight', [], (error, result) => {})
     var abi = compileResults['abi']
     var bytecode = compileResults['bytecode'].replace('0x','')
+    var deployedBytecode = compileResults['bytecode_runtime'].replace('0x','')
     var data = {
       'sources': {},
       'contracts': {}
@@ -123,6 +124,13 @@ class App extends Component {
 
           },
           "object": bytecode,
+          "opcodes": ""
+        },
+        "deployedBytecode": {
+          "linkReferences": {
+
+          },
+          "object": deployedBytecode,
           "opcodes": ""
         }
       }
