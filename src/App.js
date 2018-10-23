@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import "./remix-api";
-import { Button, Message, Radio, Popup, Icon } from 'semantic-ui-react'
+import { Button, Radio, Popup, Icon } from 'semantic-ui-react'
 import { Helmet } from 'react-helmet'
 import {CopyToClipboard} from 'react-copy-to-clipboard'
 
@@ -57,7 +57,7 @@ class App extends Component {
     let compileURL
     const request = new XMLHttpRequest()
     if (this.state.compileDst === "remote") {
-      compileURL = ''
+      compileURL = 'https://vyper.live/compile'
     } else if (this.state.compileDst === "local") {
       compileURL = 'http://localhost:8000/compile'
     }
@@ -147,7 +147,7 @@ class App extends Component {
       return (
         <div class="ui positive message">
           <div class="header">
-            succeeded!
+            Succeeded!
           </div>
           <p />
           <CopyToClipboard text={this.state.compilationResult.bytecode} 
@@ -168,7 +168,7 @@ class App extends Component {
       return (
         <div class="ui error message">
           <div class="header">
-            failed!
+            Failed!
           </div>
           <p />
           <div class="content">
@@ -201,7 +201,7 @@ class App extends Component {
           <style>{'body { background-color: #F0F3FE; }'}</style>
         </Helmet>
         <div style={{ display: "inline" }}>
-          <h1 style={{ marginTop: "1em" }}>Vyper plug-in</h1>
+          <h1 style={{ marginTop: "1em" }}>Vyper Plugin</h1>
           <p>v 1.0.0</p>
         </div>
         <div style={{ background: "white", margin: "1em 2em", padding: "1.5em 0" }}>
