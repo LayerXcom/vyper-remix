@@ -152,9 +152,15 @@ class App extends Component {
           <p />
           <CopyToClipboard text={this.state.compilationResult.bytecode} 
           onCopy={() => this.setState({copied: true})}>
-          <button>Copy bytecode to clipboard</button>
+          <button class="ui labeled icon button">
+            <i class="copy icon"></i>
+            Copy bytecode to clipboard
+          </button>
           </CopyToClipboard>
-          {this.state.copied ? <span style={{color: 'red'}}>Copied.</span> : null}
+          <p />
+          <div>
+            {this.state.copied ? <span style={{color: 'red'}}>Copied.</span> : null}
+          </div>
         </div>
       )
     } else if(result.status == 'failed' && result.column && result.line) {
