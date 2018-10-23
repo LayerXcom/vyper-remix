@@ -57,7 +57,7 @@ class App extends Component {
     let compileURL
     const request = new XMLHttpRequest()
     if (this.state.compileDst === "remote") {
-      compileURL = ''
+      compileURL = 'https://plugin.vyper.live/compile'
     } else if (this.state.compileDst === "local") {
       compileURL = 'http://localhost:8000/compile'
     }
