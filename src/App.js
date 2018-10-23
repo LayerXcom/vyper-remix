@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import "./remix-api";
-import { Button, Message, Radio, Popup, Icon } from 'semantic-ui-react'
+import { Button, Radio, Popup, Icon } from 'semantic-ui-react'
 import { Helmet } from 'react-helmet'
 import {CopyToClipboard} from 'react-copy-to-clipboard'
 
