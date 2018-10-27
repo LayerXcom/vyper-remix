@@ -33,6 +33,7 @@ class App extends Component {
   }
 
   onCompileFromRemix() {
+    this.setState({ compilationResult: "inProgress" })
     const plugin = this
     plugin.result = {}
     extension.call('editor', 'getCurrentFile', [], (error, result) => {
@@ -143,7 +144,9 @@ class App extends Component {
   }
 
   renderCompilationResult(fileName, result) {
-    if(result.status == 'success') {
+    if(result.status == 'inProgress') {
+      return ''
+    } else if(result.status == 'success') {  
       return (
         <div class="ui positive message">
           <div class="header">
