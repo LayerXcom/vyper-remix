@@ -30,6 +30,7 @@ class App extends Component {
 
   onPluginLoaded() {
     extension.call('app', 'updateTitle', ['remix-vyper'])
+    extension.call('editor', 'setFile', ['browser/template.vy', 'data: public(uint256)\ndata2: public(uint256)'])
   }
 
   onCompileFromRemix() {
