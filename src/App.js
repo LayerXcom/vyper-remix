@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import "./remix-api";
 import { Button, Radio, Popup, Icon } from 'semantic-ui-react'
 import { Helmet } from 'react-helmet'
-import {CopyToClipboard} from 'react-copy-to-clipboard'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { ballot } from './example-contracts'
 
 var extension = new window.RemixExtension()
 
@@ -30,7 +31,7 @@ class App extends Component {
 
   onPluginLoaded() {
     extension.call('app', 'updateTitle', ['remix-vyper'])
-    extension.call('editor', 'setFile', ['browser/template.vy', 'data: public(uint256)\ndata2: public(uint256)'])
+    extension.call('editor', 'setFile', [`browser/${ballot.name}`, ballot.content])
   }
 
   onCompileFromRemix() {
