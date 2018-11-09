@@ -207,7 +207,7 @@ class App extends Component {
         </Helmet>
         <div style={{ display: "inline" }}>
           <h1 style={{ marginTop: "1em" }}>Vyper Plugin</h1>
-          <p>v 1.0.0</p>
+          <p>v 0.1.0</p>
         </div>
         <div style={{ background: "white", margin: "1em 2em", padding: "1.5em 0" }}>
           <Radio type="radio" name="compile" value="remote" onChange={() => this.setState({ compileDst: "remote" })} checked={this.state.compileDst === 'remote'} label="Remote" />
