@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import "./remix-api";
-import { Button, Radio, Popup, Icon, Tab } from 'semantic-ui-react'
-import { Container } from 'semantic-ui-react'
+import { Button, Radio, Popup, Icon} from 'semantic-ui-react'
 import { Helmet } from 'react-helmet'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import '../node_modules/react-tabs/style/react-tabs.css'
 import { ballot } from './example-contracts'
 
 var extension = new window.RemixExtension()
@@ -193,22 +194,27 @@ class App extends Component {
         <div>
           <span style={{color: 'green'}}>Succeeded!</span>
           <p />
-          <div>
-          <Button toggle active={this.state.showedResult === 'bytecode'} onClick={() => this.handleToggleClick('bytecode')}>
-            bytecode
-          </Button>
-          <Button toggle active={this.state.showedResult === 'bytecode_runtime'} onClick={() => this.handleToggleClick('bytecode_runtime')}>
-            runtime bytecode
-          </Button>
-          <Button toggle active={this.state.showedResult === 'ir'} onClick={() => this.handleToggleClick('ir')}>
-            LLL
-          </Button>
-          </div>
-          <p />
           {this.renderCopyResult()}
-          <Container textAlign='left'>
-            {this.state.showedResult ? <pre>{this.state.compilationResult[this.state.showedResult]}</pre> : null}
-          </Container>
+          <p />
+          <div>
+          <Tabs>
+            <TabList>
+              <Tab>bytecode</Tab>
+              <Tab>runtime bytecode</Tab>
+              <Tab>LLL</Tab>
+            </TabList>
+
+            <TabPanel>
+              <h2>{this.state.compilationResult['bytecode']}</h2>
+            </TabPanel>
+            <TabPanel>
+              <h2>{this.state.compilationResult['bytecode_runtime']}</h2>
+            </TabPanel>
+            <TabPanel>
+              <h2><pre>{this.state.compilationResult['ir']}</pre></h2>
+            </TabPanel>
+        </Tabs>
+        </div>
         </div>
       )
     } else if(result.status == 'failed' && result.column && result.line) {
@@ -246,13 +252,13 @@ class App extends Component {
     return (
       <div style={{ "textAlign": "center" }}>
         <Helmet>
-          <style>{'body { color: white; background-color: #252839; }'}</style>
+          <style>{'body { color: black; background-color: white; }'}</style>
         </Helmet>
         <div style={{ display: "inline" }}>
           <h1 style={{ marginTop: "1em" }}>Vyper Compiler</h1>
           <p>v 0.2.0</p>
         </div>
-        <div style={{ color: "white", background: "#495285", margin: "1em 2em", padding: "1.5em 0" }}>
+        <div style={{ margin: "1em 2em", padding: "1.5em 0" }}>
           <Radio type="radio" name="compile" value="remote" onChange={() => this.setState({ compileDst: "remote" })} checked={this.state.compileDst === 'remote'} label="Remote"/>
           <Popup trigger={<Icon name="question circle" />}
             content="You can use remote compiler"
@@ -268,7 +274,7 @@ class App extends Component {
             <div style={{ "marginTop": "2em" }}>
               <Button disabled={this.state.loading} primary onClick={() => this.onCompileFromRemix()}>
                 Compile
-            </Button>
+              </Button>
             <Popup trigger={<Icon name="question circle" />}>  
                 <div>1. Write vyper code(.vy) in the editor</div>
                 <div>2. Click Compile button</div>
