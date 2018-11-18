@@ -147,6 +147,7 @@ class App extends Component {
 
   renderCompilationResult(fileName, result) {
     if(result.status == 'inProgress') {
+      // Show an icon which tells "it's in progress"
       return ''
     } else if(result.status == 'success') {  
       return (
