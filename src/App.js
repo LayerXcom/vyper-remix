@@ -4,7 +4,7 @@ import { Button, Radio, Popup, Icon} from 'semantic-ui-react'
 import { Helmet } from 'react-helmet'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
-import '../node_modules/react-tabs/style/react-tabs.css'
+// import '../node_modules/react-tabs/style/react-tabs.css'
 import { ballot } from './example-contracts'
 
 var extension = new window.RemixExtension()
