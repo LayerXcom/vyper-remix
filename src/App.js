@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import "./remix-api";
 import { Button, Radio, Popup, Icon } from 'semantic-ui-react'
+import { Container } from 'semantic-ui-react'
 import { Helmet } from 'react-helmet'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { ballot } from './example-contracts'
@@ -17,7 +18,8 @@ class App extends Component {
       loading: false,
       compileDst: "remote",
       compilationResult: '',
-      copied: false
+      copied: false,
+      showedResult: ''
     }
 
     this.onCompileFromRemix = this.onCompileFromRemix.bind(this)
@@ -25,6 +27,8 @@ class App extends Component {
     this.highlightErrors = this.highlightErrors.bind(this)
     this.onCompileFailed = this.onCompileFailed.bind(this)
     this.onPluginLoaded = this.onPluginLoaded.bind(this)
+    this.handleToggleClick = this.handleToggleClick.bind(this)
+    this.renderCopyResult = this.renderCopyResult.bind(this)
 
     this.onPluginLoaded()
   }
@@ -42,6 +46,7 @@ class App extends Component {
       console.log(error, result)
       plugin.result.placeholderText = result[0]
       plugin.result.copied = false
+      plugin.result.showedResult = ''
       extension.call('editor', 'getFile', result, (error, result) => {
         console.log(result)
         plugin.result.vyper = result[0]
@@ -145,28 +150,65 @@ class App extends Component {
       )
   }
 
-  renderCompilationResult(fileName, result) {
-    if(result.status == 'inProgress') {
-      // Show an icon which tells "it's in progress"
-      return ''
-    } else if(result.status == 'success') {  
+  handleToggleClick(type) {
+    this.setState({ copied: false })
+    if(this.state.showedResult === type) {
+      this.setState({ showedResult: '' })
+    } else {
+      this.setState({ showedResult: type })
+    } 
+  }
+
+  renderCopyResult() {
+    if(this.state.showedResult) {
       return (
-        <div class="ui positive message">
-          <div class="header">
-            Succeeded!
-          </div>
-          <p />
-          <CopyToClipboard text={this.state.compilationResult.bytecode} 
-          onCopy={() => this.setState({copied: true})}>
+        <div>
+        <CopyToClipboard text={this.state.compilationResult[this.state.showedResult]} onCopy={() => this.setState({copied: true})}>
           <button class="ui labeled icon button">
             <i class="copy icon"></i>
-            Copy bytecode to clipboard
+            Copy
           </button>
-          </CopyToClipboard>
+        </CopyToClipboard>
+        <p />
+        {this.state.copied ? <span style={{color: 'red'}}>Copied.</span> : null}
+        </div>
+      )
+    } else {
+      return null
+    }
+  }
+
+  renderCompilationResult(fileName, result) {
+    if(result.status == 'inProgress') {
+      // TODO: Show an icon which tells "it's in progress"
+      return ''
+      // FIXME: This doesn't work
+      // return (
+      //   <div>
+      //     <span style={{color: 'red'}}>Compilation in progress...</span>
+      //   </div>
+      // )
+    } else if(result.status == 'success') {  
+      return (
+        <div>
+          <span style={{color: 'green'}}>Succeeded!</span>
           <p />
           <div>
-            {this.state.copied ? <span style={{color: 'red'}}>Copied.</span> : null}
+          <Button toggle active={this.state.showedResult === 'bytecode'} onClick={() => this.handleToggleClick('bytecode')}>
+            bytecode
+          </Button>
+          <Button toggle active={this.state.showedResult === 'bytecode_runtime'} onClick={() => this.handleToggleClick('bytecode_runtime')}>
+            runtime bytecode
+          </Button>
+          <Button toggle active={this.state.showedResult === 'ir'} onClick={() => this.handleToggleClick('ir')}>
+            LLL
+          </Button>
           </div>
+          <p />
+          {this.renderCopyResult()}
+          <Container textAlign='left'>
+            {this.state.showedResult ? <pre>{this.state.compilationResult[this.state.showedResult]}</pre> : null}
+          </Container>
         </div>
       )
     } else if(result.status == 'failed' && result.column && result.line) {
@@ -207,8 +249,8 @@ class App extends Component {
           <style>{'body { background-color: #F0F3FE; }'}</style>
         </Helmet>
         <div style={{ display: "inline" }}>
-          <h1 style={{ marginTop: "1em" }}>Vyper Plugin</h1>
-          <p>v 0.1.0</p>
+          <h1 style={{ marginTop: "1em" }}>Vyper Compiler</h1>
+          <p>v 0.2.0</p>
         </div>
         <div style={{ background: "white", margin: "1em 2em", padding: "1.5em 0" }}>
           <Radio type="radio" name="compile" value="remote" onChange={() => this.setState({ compileDst: "remote" })} checked={this.state.compileDst === 'remote'} label="Remote" />
