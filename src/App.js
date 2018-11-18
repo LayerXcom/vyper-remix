@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import "./remix-api";
-import { Button, Radio, Popup, Icon } from 'semantic-ui-react'
+import { Button, Radio, Popup, Icon, Tab } from 'semantic-ui-react'
 import { Container } from 'semantic-ui-react'
 import { Helmet } from 'react-helmet'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
@@ -246,14 +246,14 @@ class App extends Component {
     return (
       <div style={{ "textAlign": "center" }}>
         <Helmet>
-          <style>{'body { background-color: #F0F3FE; }'}</style>
+          <style>{'body { color: white; background-color: #252839; }'}</style>
         </Helmet>
         <div style={{ display: "inline" }}>
           <h1 style={{ marginTop: "1em" }}>Vyper Compiler</h1>
           <p>v 0.2.0</p>
         </div>
-        <div style={{ background: "white", margin: "1em 2em", padding: "1.5em 0" }}>
-          <Radio type="radio" name="compile" value="remote" onChange={() => this.setState({ compileDst: "remote" })} checked={this.state.compileDst === 'remote'} label="Remote" />
+        <div style={{ color: "white", background: "#495285", margin: "1em 2em", padding: "1.5em 0" }}>
+          <Radio type="radio" name="compile" value="remote" onChange={() => this.setState({ compileDst: "remote" })} checked={this.state.compileDst === 'remote'} label="Remote"/>
           <Popup trigger={<Icon name="question circle" />}
             content="You can use remote compiler"
             basic
