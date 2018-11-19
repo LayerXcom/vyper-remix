@@ -191,7 +191,7 @@ class App extends Component {
 
   renderBytecode(message) {
     return (
-      <Message><pre>{message}</pre></Message>
+      <Message><pre class="bytecode">{message}</pre></Message>
     )
   }
 
