@@ -249,7 +249,7 @@ class App extends Component {
               <Button disabled={this.state.loading} primary onClick={() => this.onCompileFromRemix()}>
                 Compile
               </Button>
-              <CopyToClipboard text={this.state.compilationResult[this.state.menu.active]} onCopy={() => this.setState({copied: true})}>
+              <CopyToClipboard text={this.createCompilationResultMessage(this.state.placeholderText, this.state.compilationResult)[this.state.menu.active]} onCopy={() => this.setState({copied: true})}>
                 <Button disabled={this.state.loading} primary>
                   Copy
                 </Button>
