@@ -1,0 +1,12 @@
+textarea {
+  white-space: nowrap;
+}
+
+.bytecode {
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  text-align: left;
+}

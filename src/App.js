@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import "./remix-api";
-import { Button, Radio, Popup, Icon } from 'semantic-ui-react'
+import { Button, Radio, Popup, Icon, Menu, Segment, Message, Form, TextArea } from 'semantic-ui-react'
 import { Helmet } from 'react-helmet'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { ballot } from './example-contracts'
@@ -16,7 +16,16 @@ class App extends Component {
       placeholderText: "Contract.vy",
       loading: false,
       compileDst: "remote",
-      compilationResult: '',
+      compilationResult: {
+        status: false,
+        message: '',
+        bytecode: '',
+        bytecode_runtime: '',
+        ir: ''
+      },
+      menu: {
+        active: 'bytecode'
+      },
       copied: false
     }
 
@@ -25,6 +34,7 @@ class App extends Component {
     this.highlightErrors = this.highlightErrors.bind(this)
     this.onCompileFailed = this.onCompileFailed.bind(this)
     this.onPluginLoaded = this.onPluginLoaded.bind(this)
+    this.onClickTab = this.onClickTab.bind(this)
 
     this.onPluginLoaded()
   }
@@ -35,7 +45,7 @@ class App extends Component {
   }
 
   onCompileFromRemix() {
-    this.setState({ compilationResult: "inProgress" })
+    this.setState({ compilationResult: {status: "inProgress" }})
     const plugin = this
     plugin.result = {}
     extension.call('editor', 'getCurrentFile', [], (error, result) => {
@@ -140,63 +150,72 @@ class App extends Component {
           "opcodes": ""
         }
       }
-    },
-      extension.call('compiler', 'sendCompilationResult', [this.state.placeholderText, this.state.vyper, 'vyper', data]
-      )
+    }
+      extension.call('compiler', 'sendCompilationResult', [this.state.placeholderText, this.state.vyper, 'vyper', data])
+  }
+
+  createCompilationResultMessage(fileName, result) {
+    if(result.status == 'success') {
+      return {
+        bytecode: this.state.compilationResult['bytecode'],
+        bytecode_runtime: this.state.compilationResult['bytecode_runtime'],
+        ir: this.state.compilationResult['ir']
+      }
+    } else if(result.status == 'failed' && result.column && result.line) {
+      const header = `${fileName}:${result.line}:${result.column}`
+      const body = this.state.compilationResult.message.split(/\r\n|\r|\n/)
+      const arr = [header].concat(body).join("\n")
+      return {
+        bytecode: arr,
+        bytecode_runtime: arr,
+        ir: arr
+      }
+    } else if(result.status == 'failed') {
+      const message = this.state.compilationResult.message
+      return {
+        bytecode: message,
+        bytecode_runtime: message,
+        ir: message
+      }
+    }
+    return {
+      bytecode: "",
+      bytecode_runtime: "",
+      ir: ""
+    }
+  }
+
+  onClickTab(e, {name}) {
+    this.setState({menu: {active: name}})
+  }
+
+  renderBytecode(message) {
+    return (
+      <Message><pre class="bytecode">{message}</pre></Message>
+    )
+  }
+
+  renderLLL(message) {
+    return (
+      <Form><Form.TextArea value={message} rows={10}/></Form>
+    )
   }
 
   renderCompilationResult(fileName, result) {
-    if(result.status == 'inProgress') {
-      return ''
-    } else if(result.status == 'success') {  
-      return (
-        <div class="ui positive message">
-          <div class="header">
-            Succeeded!
-          </div>
-          <p />
-          <CopyToClipboard text={this.state.compilationResult.bytecode} 
-          onCopy={() => this.setState({copied: true})}>
-          <button class="ui labeled icon button">
-            <i class="copy icon"></i>
-            Copy bytecode to clipboard
-          </button>
-          </CopyToClipboard>
-          <p />
-          <div>
-            {this.state.copied ? <span style={{color: 'red'}}>Copied.</span> : null}
-          </div>
-        </div>
-      )
-    } else if(result.status == 'failed' && result.column && result.line) {
-      const messages = this.state.compilationResult.message.split(/\r\n|\r|\n/)
-      return (
-        <div class="ui error message">
-          <div class="header">
-            Failed!
-          </div>
-          <p />
-          <div class="content">
-            {`${fileName}:${result.line}:${result.column}`}
-            <p>
-              {messages.map(m => <span>{m}<br /></span>)}
-            </p>
-          </div>
-        </div>
-      )
-    } else if(result.status == 'failed'){
-      return (
-        <div class="ui error message">
-          <div class="header">
-            failed!
-          </div>
-          <p />
-          <div class="content">
-            {this.state.compilationResult.message}
-          </div>
-        </div>
-      )
-    }
+    const activeItem = this.state.menu.active
+    const message = this.createCompilationResultMessage(fileName, result)[activeItem];
+    return (
+      <div>
+        <Menu tabular widths={3}>
+          <Menu.Item active={activeItem == 'bytecode'} name="bytecode" onClick={this.onClickTab}>bytecode</Menu.Item>
+          <Menu.Item active={activeItem == 'bytecode_runtime'} name="bytecode_runtime" onClick={this.onClickTab}>runtime bytecode</Menu.Item>
+          <Menu.Item active={activeItem == 'ir'} name="ir" onClick={this.onClickTab}>LLL</Menu.Item>
+        </Menu>
+        <Segment attached='bottom'>
+          {(activeItem == 'ir') ? this.renderLLL(message) : this.renderBytecode(message)}
+        </Segment>
+      </div>
+    )
   }
 
   render() {
@@ -205,8 +224,13 @@ class App extends Component {
         <Helmet>
           <style>{'body { background-color: #F0F3FE; }'}</style>
         </Helmet>
-        <div style={{ display: "inline" }}>
-          <h1 style={{ marginTop: "1em" }}>Vyper Plugin</h1>
+        <div style={{ marginTop: "1em" }}>
+          <h1 style={{ display: "inline" }}>Vyper Plugin</h1>
+          <Popup trigger={<Icon name="question circle" />}>
+            <div>1. Write vyper code(.vy) in the editor</div>
+            <div>2. Click Compile button</div>
+            <div>3. Now you can deploy the contract in the Run tab!</div>
+          </Popup>
           <p>v 0.1.0</p>
         </div>
         <div style={{ background: "white", margin: "1em 2em", padding: "1.5em 0" }}>
@@ -220,17 +244,16 @@ class App extends Component {
             content="You can use your own compiler at localhost:8000"
             basic
           />
-
           <div>
             <div style={{ "marginTop": "2em" }}>
               <Button disabled={this.state.loading} primary onClick={() => this.onCompileFromRemix()}>
                 Compile
-            </Button>
-            <Popup trigger={<Icon name="question circle" />}>  
-                <div>1. Write vyper code(.vy) in the editor</div>
-                <div>2. Click Compile button</div>
-                <div>3. Now you can deploy the contract in the Run tab!</div>
-              </Popup>
+              </Button>
+              <CopyToClipboard text={this.createCompilationResultMessage(this.state.placeholderText, this.state.compilationResult)[this.state.menu.active]} onCopy={() => this.setState({copied: true})}>
+                <Button disabled={this.state.loading} primary>
+                  Copy
+                </Button>
+              </CopyToClipboard>
             </div>
           </div>
           <p />
