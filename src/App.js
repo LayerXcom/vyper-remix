@@ -13,7 +13,7 @@ class App extends Component {
 
     this.state = {
       vyper: '',
-      placeholderText: "Contract.vy",
+      placeholderText: 'Code *.vy!',
       loading: false,
       compileDst: "remote",
       compilationResult: {
@@ -257,7 +257,7 @@ class App extends Component {
             basic
           />
           <div>
-            <div style={{ "marginTop": "2em" }}>
+            <div style={{ "marginTop": "1em" }}>
               <Button disabled={this.state.loading} primary onClick={() => this.onCompileFromRemix()}>
                 Compile
               </Button>
@@ -266,6 +266,9 @@ class App extends Component {
                   Copy
                 </Button>
               </CopyToClipboard>
+            </div>
+            <div style={{ "marginTop": "1em" }}>
+              {this.state.placeholderText}
             </div>
           </div>
           <p />
