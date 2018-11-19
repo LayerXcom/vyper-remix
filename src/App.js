@@ -21,7 +21,9 @@ class App extends Component {
         message: '',
         bytecode: '',
         bytecode_runtime: '',
-        ir: ''
+        abi: '',
+        ir: '',
+        source_map_asm_list: ''
       },
       menu: {
         active: 'bytecode'
@@ -159,7 +161,9 @@ class App extends Component {
       return {
         bytecode: this.state.compilationResult['bytecode'],
         bytecode_runtime: this.state.compilationResult['bytecode_runtime'],
-        ir: this.state.compilationResult['ir']
+        abi: JSON.stringify(this.state.compilationResult['abi']),
+        ir: this.state.compilationResult['ir'],
+        source_map_asm_list: this.state.compilationResult['source_map_asm_list']
       }
     } else if(result.status == 'failed' && result.column && result.line) {
       const header = `${fileName}:${result.line}:${result.column}`
@@ -168,20 +172,26 @@ class App extends Component {
       return {
         bytecode: arr,
         bytecode_runtime: arr,
-        ir: arr
+        abi: arr,
+        ir: arr,
+        source_map_asm_list: arr
       }
     } else if(result.status == 'failed') {
       const message = this.state.compilationResult.message
       return {
         bytecode: message,
         bytecode_runtime: message,
-        ir: message
+        abi: message,
+        ir: message,
+        source_map_asm_list: message
       }
     }
     return {
       bytecode: "",
       bytecode_runtime: "",
-      ir: ""
+      abi: "",
+      ir: "",
+      source_map_asm_list: ""
     }
   }
 
@@ -195,7 +205,7 @@ class App extends Component {
     )
   }
 
-  renderLLL(message) {
+  renderText(message) {
     return (
       <Form><Form.TextArea value={message} rows={20}/></Form>
     )
@@ -206,13 +216,15 @@ class App extends Component {
     const message = this.createCompilationResultMessage(fileName, result)[activeItem];
     return (
       <div>
-        <Menu tabular widths={3}>
+        <Menu tabular widths={5}>
           <Menu.Item active={activeItem == 'bytecode'} name="bytecode" onClick={this.onClickTab}>bytecode</Menu.Item>
           <Menu.Item active={activeItem == 'bytecode_runtime'} name="bytecode_runtime" onClick={this.onClickTab}>runtime bytecode</Menu.Item>
+          <Menu.Item active={activeItem == 'abi'} name="abi" onClick={this.onClickTab}>abi</Menu.Item>
           <Menu.Item active={activeItem == 'ir'} name="ir" onClick={this.onClickTab}>LLL</Menu.Item>
+          <Menu.Item active={activeItem == 'source_map_asm_list'} name="source_map_asm_list" onClick={this.onClickTab}>asm</Menu.Item>
         </Menu>
         <Segment attached='bottom'>
-          {(activeItem == 'ir') ? this.renderLLL(message) : this.renderBytecode(message)}
+          {(['ir', 'source_map_asm_list'].indexOf(activeItem) + 1) ? this.renderText(message) : this.renderBytecode(message)}
         </Segment>
       </div>
     )
