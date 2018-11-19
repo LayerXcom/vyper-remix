@@ -197,7 +197,7 @@ class App extends Component {
 
   renderLLL(message) {
     return (
-      <Form><Form.TextArea value={message} rows={10}/></Form>
+      <Form><Form.TextArea value={message} rows={20}/></Form>
     )
   }
 
