@@ -224,8 +224,8 @@ class App extends Component {
         <Helmet>
           <style>{'body { background-color: #F0F3FE; }'}</style>
         </Helmet>
-        <div style={{ display: "inline" }}>
-          <h1 style={{ marginTop: "1em" }}>Vyper Plugin</h1>
+        <div style={{ marginTop: "1em" }}>
+          <h1 style={{ display: "inline" }}>Vyper Plugin</h1>
           <Popup trigger={<Icon name="question circle" />}>
             <div>1. Write vyper code(.vy) in the editor</div>
             <div>2. Click Compile button</div>
