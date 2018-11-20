@@ -22,8 +22,7 @@ class App extends Component {
         bytecode: '',
         bytecode_runtime: '',
         abi: '',
-        ir: '',
-        source_map_asm_list: ''
+        ir: ''
       },
       menu: {
         active: 'bytecode'
@@ -162,8 +161,7 @@ class App extends Component {
         bytecode: this.state.compilationResult['bytecode'],
         bytecode_runtime: this.state.compilationResult['bytecode_runtime'],
         abi: JSON.stringify(this.state.compilationResult['abi']),
-        ir: this.state.compilationResult['ir'],
-        source_map_asm_list: this.state.compilationResult['source_map_asm_list']
+        ir: this.state.compilationResult['ir']
       }
     } else if(result.status == 'failed' && result.column && result.line) {
       const header = `${fileName}:${result.line}:${result.column}`
@@ -173,8 +171,7 @@ class App extends Component {
         bytecode: arr,
         bytecode_runtime: arr,
         abi: arr,
-        ir: arr,
-        source_map_asm_list: arr
+        ir: arr
       }
     } else if(result.status == 'failed') {
       const message = this.state.compilationResult.message
@@ -182,16 +179,14 @@ class App extends Component {
         bytecode: message,
         bytecode_runtime: message,
         abi: message,
-        ir: message,
-        source_map_asm_list: message
+        ir: message
       }
     }
     return {
       bytecode: "",
       bytecode_runtime: "",
       abi: "",
-      ir: "",
-      source_map_asm_list: ""
+      ir: ""
     }
   }
 
@@ -221,10 +216,9 @@ class App extends Component {
           <Menu.Item active={activeItem == 'bytecode_runtime'} name="bytecode_runtime" onClick={this.onClickTab}>runtime bytecode</Menu.Item>
           <Menu.Item active={activeItem == 'abi'} name="abi" onClick={this.onClickTab}>abi</Menu.Item>
           <Menu.Item active={activeItem == 'ir'} name="ir" onClick={this.onClickTab}>LLL</Menu.Item>
-          <Menu.Item active={activeItem == 'source_map_asm_list'} name="source_map_asm_list" onClick={this.onClickTab}>asm</Menu.Item>
         </Menu>
         <Segment attached='bottom'>
-          {(['ir', 'source_map_asm_list'].indexOf(activeItem) + 1) ? this.renderText(message) : this.renderBytecode(message)}
+          {(['ir'].indexOf(activeItem) + 1) ? this.renderText(message) : this.renderBytecode(message)}
         </Segment>
       </div>
     )
