@@ -13,7 +13,7 @@ class App extends Component {
 
     this.state = {
       vyper: '',
-      placeholderText: "Contract.vy",
+      placeholderText: 'Code *.vy!',
       loading: false,
       compileDst: "remote",
       compilationResult: {
@@ -21,6 +21,7 @@ class App extends Component {
         message: '',
         bytecode: '',
         bytecode_runtime: '',
+        abi: '',
         ir: ''
       },
       menu: {
@@ -159,6 +160,7 @@ class App extends Component {
       return {
         bytecode: this.state.compilationResult['bytecode'],
         bytecode_runtime: this.state.compilationResult['bytecode_runtime'],
+        abi: JSON.stringify(this.state.compilationResult['abi'], null , "\t"),
         ir: this.state.compilationResult['ir']
       }
     } else if(result.status == 'failed' && result.column && result.line) {
@@ -168,6 +170,7 @@ class App extends Component {
       return {
         bytecode: arr,
         bytecode_runtime: arr,
+        abi: arr,
         ir: arr
       }
     } else if(result.status == 'failed') {
@@ -175,12 +178,14 @@ class App extends Component {
       return {
         bytecode: message,
         bytecode_runtime: message,
+        abi: message,
         ir: message
       }
     }
     return {
       bytecode: "",
       bytecode_runtime: "",
+      abi: "",
       ir: ""
     }
   }
@@ -195,9 +200,9 @@ class App extends Component {
     )
   }
 
-  renderLLL(message) {
+  renderText(message) {
     return (
-      <Form><Form.TextArea value={message} rows={10}/></Form>
+      <Form><Form.TextArea value={message} rows={20}/></Form>
     )
   }
 
@@ -206,20 +211,23 @@ class App extends Component {
     const message = this.createCompilationResultMessage(fileName, result)[activeItem];
     return (
       <div>
-        <Menu pointing secondary attached='top' widths="three" >
-          <Menu.Item active={activeItem == 'bytecode'} name="bytecode" onClick={this.onClickTab}>
+        <Menu pointing secondary attached='top' widths={4}>
+          <Menu.Item active={activeItem == 'bytecode'} name="bytecode" onClick={this.onClickTab} menuItem>
             bytecode
           </Menu.Item>
-          <Menu.Item active={activeItem == 'bytecode_runtime'} name="bytecode_runtime" onClick={this.onClickTab}>
+          <Menu.Item active={activeItem == 'bytecode_runtime'} name="bytecode_runtime" onClick={this.onClickTab} menuItem>
             runtime bytecode
           </Menu.Item>
-          <Menu.Item active={activeItem == 'ir'} name="ir" onClick={this.onClickTab}>
+          <Menu.Item active={activeItem == 'abi'} name="abi" onClick={this.onClickTab} menuItem>
+            abi
+          </Menu.Item>
+          <Menu.Item active={activeItem == 'ir'} name="ir" onClick={this.onClickTab} menuItem>
             LLL
           </Menu.Item>
         </Menu>
 
         <Segment attached='bottom'>
-          {(activeItem == 'ir') ? this.renderLLL(message) : this.renderBytecode(message)}
+          {(['abi', 'ir'].indexOf(activeItem) >= 0) ? this.renderText(message) : this.renderBytecode(message)}
         </Segment>
       </div>
     )
@@ -236,6 +244,11 @@ class App extends Component {
             <Image src="./logo.svg" />
             <Header.Content>
               Vyper Plugin
+              <Popup trigger={<Icon size='tiny' name="question circle" />}>
+                <div>1. Write vyper code(.vy) in the editor</div>
+                <div>2. Click Compile button</div>
+                <div>3. Now you can deploy the contract in the Run tab!</div>
+              </Popup>
               <Header.Subheader style={{"text-align": "left"}}>v0.1.0</Header.Subheader>
             </Header.Content>
           </Header>
@@ -252,13 +265,16 @@ class App extends Component {
             content="You can use your own compiler at localhost:8000"
             basic
           />
-          <div style={{ "marginTop": "2em" }}>
+          <div style={{ "marginTop": "1em" }}>
             <Button icon primary content='Compile' icon='sync'  disabled={this.state.loading} primary onClick={() => this.onCompileFromRemix()} />
             <CopyToClipboard text={this.createCompilationResultMessage(this.state.placeholderText, this.state.compilationResult)[this.state.menu.active]} onCopy={() => this.setState({copied: true})}>
               <Button icon primary content='Copy' icon='copy'  disabled={this.state.loading} primary />
             </CopyToClipboard>
           </div>
-          <div style={{ "marginTop": "2em" }}>
+          <div style={{ "marginTop": "1em" }}>
+            {this.state.placeholderText}
+          </div>
+          <div style={{ "marginTop": "1em" }}>
             {this.renderCompilationResult(this.state.placeholderText, this.state.compilationResult)}
           </div>
         </div>
