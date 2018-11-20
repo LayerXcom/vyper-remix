@@ -13,7 +13,7 @@ class App extends Component {
 
     this.state = {
       vyper: '',
-      placeholderText: "Contract.vy",
+      placeholderText: 'Code *.vy!',
       loading: false,
       compileDst: "remote",
       compilationResult: {
@@ -21,6 +21,7 @@ class App extends Component {
         message: '',
         bytecode: '',
         bytecode_runtime: '',
+        abi: '',
         ir: ''
       },
       menu: {
@@ -159,6 +160,7 @@ class App extends Component {
       return {
         bytecode: this.state.compilationResult['bytecode'],
         bytecode_runtime: this.state.compilationResult['bytecode_runtime'],
+        abi: JSON.stringify(this.state.compilationResult['abi'], null , "\t"),
         ir: this.state.compilationResult['ir']
       }
     } else if(result.status == 'failed' && result.column && result.line) {
@@ -168,6 +170,7 @@ class App extends Component {
       return {
         bytecode: arr,
         bytecode_runtime: arr,
+        abi: arr,
         ir: arr
       }
     } else if(result.status == 'failed') {
@@ -175,12 +178,14 @@ class App extends Component {
       return {
         bytecode: message,
         bytecode_runtime: message,
+        abi: message,
         ir: message
       }
     }
     return {
       bytecode: "",
       bytecode_runtime: "",
+      abi: "",
       ir: ""
     }
   }
@@ -195,9 +200,9 @@ class App extends Component {
     )
   }
 
-  renderLLL(message) {
+  renderText(message) {
     return (
-      <Form><Form.TextArea value={message} rows={10}/></Form>
+      <Form><Form.TextArea value={message} rows={20}/></Form>
     )
   }
 
@@ -206,13 +211,14 @@ class App extends Component {
     const message = this.createCompilationResultMessage(fileName, result)[activeItem];
     return (
       <div>
-        <Menu tabular widths={3}>
+        <Menu tabular widths={5}>
           <Menu.Item active={activeItem == 'bytecode'} name="bytecode" onClick={this.onClickTab}>bytecode</Menu.Item>
           <Menu.Item active={activeItem == 'bytecode_runtime'} name="bytecode_runtime" onClick={this.onClickTab}>runtime bytecode</Menu.Item>
+          <Menu.Item active={activeItem == 'abi'} name="abi" onClick={this.onClickTab}>abi</Menu.Item>
           <Menu.Item active={activeItem == 'ir'} name="ir" onClick={this.onClickTab}>LLL</Menu.Item>
         </Menu>
         <Segment attached='bottom'>
-          {(activeItem == 'ir') ? this.renderLLL(message) : this.renderBytecode(message)}
+          {(['abi', 'ir'].indexOf(activeItem) >= 0) ? this.renderText(message) : this.renderBytecode(message)}
         </Segment>
       </div>
     )
@@ -245,7 +251,7 @@ class App extends Component {
             basic
           />
           <div>
-            <div style={{ "marginTop": "2em" }}>
+            <div style={{ "marginTop": "1em" }}>
               <Button disabled={this.state.loading} primary onClick={() => this.onCompileFromRemix()}>
                 Compile
               </Button>
@@ -254,6 +260,9 @@ class App extends Component {
                   Copy
                 </Button>
               </CopyToClipboard>
+            </div>
+            <div style={{ "marginTop": "1em" }}>
+              {this.state.placeholderText}
             </div>
           </div>
           <p />
