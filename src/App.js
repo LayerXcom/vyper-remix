@@ -218,7 +218,7 @@ class App extends Component {
           <Menu.Item active={activeItem == 'ir'} name="ir" onClick={this.onClickTab}>LLL</Menu.Item>
         </Menu>
         <Segment attached='bottom'>
-          {(['abi', 'ir'].indexOf(activeItem) + 1) ? this.renderText(message) : this.renderBytecode(message)}
+          {(['abi', 'ir'].indexOf(activeItem) >= 0) ? this.renderText(message) : this.renderBytecode(message)}
         </Segment>
       </div>
     )
