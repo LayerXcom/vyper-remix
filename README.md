@@ -11,7 +11,9 @@ To use it, open `Settings` tab and click the `Vyper` button in the plugin sectio
 
 ### Local plugin
 You can host this plugin in your local.
+
 ```npm install```
+
 ```npm start```
 
 Put this JSON in `Settings` tab.
