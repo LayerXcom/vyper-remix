@@ -249,7 +249,6 @@ class App extends Component {
                 <div>2. Click Compile button</div>
                 <div>3. Now you can deploy the contract in the Run tab!</div>
               </Popup>
-              <Header.Subheader style={{"text-align": "left"}}>v0.1.0</Header.Subheader>
             </Header.Content>
           </Header>
 
