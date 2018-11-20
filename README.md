@@ -1,9 +1,6 @@
 # vyper-remix
 Vyper Plugin for Remix IDE.
 
-NOTE: This plugin work with remix-ide [alpha version](https://remix-alpha.ethereum.org).
-The integration to the [production remix-ide](https://remix.ethereum.org) is WIP.
-
 ## How to get started
 ### Remote plugin
 This plugin is hosted at https://plugin.vyper.live.
