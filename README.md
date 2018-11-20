@@ -31,9 +31,11 @@ Put this JSON in `Settings` tab.
 ### Local Vyper Compiler
 You can use your local Vyper compiler by selecting the radio button `Local` .
 First, you need to install Vyper. It is strongly recommended to install Vyper in a virtual Python environment.
+
 ```pip install vyper```
 
 (see [installing-vyper](https://vyper.readthedocs.io/en/latest/installing-vyper.html#installing-vyper)).
 
 Then, Vyper compiler starts with this command(default: http://localhost:8000).
+
 ```vyper-serve```
