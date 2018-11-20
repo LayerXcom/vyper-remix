@@ -10,3 +10,7 @@ textarea {
   word-wrap: break-word;
   text-align: left;
 }
+
+.menu > .item {
+  height: 52px;
+}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import "./remix-api";
-import { Button, Radio, Popup, Icon, Menu, Segment, Message, Form, TextArea } from 'semantic-ui-react'
+import { Button, Radio, Popup, Icon, Menu, Segment, Message, Form, TextArea, Header, Image } from 'semantic-ui-react'
 import { Helmet } from 'react-helmet'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { ballot } from './example-contracts'
@@ -211,12 +211,21 @@ class App extends Component {
     const message = this.createCompilationResultMessage(fileName, result)[activeItem];
     return (
       <div>
-        <Menu tabular widths={5}>
-          <Menu.Item active={activeItem == 'bytecode'} name="bytecode" onClick={this.onClickTab}>bytecode</Menu.Item>
-          <Menu.Item active={activeItem == 'bytecode_runtime'} name="bytecode_runtime" onClick={this.onClickTab}>runtime bytecode</Menu.Item>
-          <Menu.Item active={activeItem == 'abi'} name="abi" onClick={this.onClickTab}>abi</Menu.Item>
-          <Menu.Item active={activeItem == 'ir'} name="ir" onClick={this.onClickTab}>LLL</Menu.Item>
+        <Menu pointing secondary attached='top' widths={4}>
+          <Menu.Item active={activeItem == 'bytecode'} name="bytecode" onClick={this.onClickTab} menuItem>
+            bytecode
+          </Menu.Item>
+          <Menu.Item active={activeItem == 'bytecode_runtime'} name="bytecode_runtime" onClick={this.onClickTab} menuItem>
+            runtime bytecode
+          </Menu.Item>
+          <Menu.Item active={activeItem == 'abi'} name="abi" onClick={this.onClickTab} menuItem>
+            abi
+          </Menu.Item>
+          <Menu.Item active={activeItem == 'ir'} name="ir" onClick={this.onClickTab} menuItem>
+            LLL
+          </Menu.Item>
         </Menu>
+
         <Segment attached='bottom'>
           {(['abi', 'ir'].indexOf(activeItem) >= 0) ? this.renderText(message) : this.renderBytecode(message)}
         </Segment>
@@ -231,13 +240,18 @@ class App extends Component {
           <style>{'body { background-color: #F0F3FE; }'}</style>
         </Helmet>
         <div style={{ marginTop: "1em" }}>
-          <h1 style={{ display: "inline" }}>Vyper Plugin</h1>
-          <Popup trigger={<Icon name="question circle" />}>
-            <div>1. Write vyper code(.vy) in the editor</div>
-            <div>2. Click Compile button</div>
-            <div>3. Now you can deploy the contract in the Run tab!</div>
-          </Popup>
-          <p>v 0.1.0</p>
+          <Header as='h1'>
+            <Image src="./logo.svg" />
+            <Header.Content>
+              Vyper Plugin
+              <Popup trigger={<Icon size='tiny' name="question circle" />}>
+                <div>1. Write vyper code(.vy) in the editor</div>
+                <div>2. Click Compile button</div>
+                <div>3. Now you can deploy the contract in the Run tab!</div>
+              </Popup>
+            </Header.Content>
+          </Header>
+
         </div>
         <div style={{ background: "white", margin: "1em 2em", padding: "1.5em 0" }}>
           <Radio type="radio" name="compile" value="remote" onChange={() => this.setState({ compileDst: "remote" })} checked={this.state.compileDst === 'remote'} label="Remote" />
@@ -250,23 +264,16 @@ class App extends Component {
             content="You can use your own compiler at localhost:8000"
             basic
           />
-          <div>
-            <div style={{ "marginTop": "1em" }}>
-              <Button disabled={this.state.loading} primary onClick={() => this.onCompileFromRemix()}>
-                Compile
-              </Button>
-              <CopyToClipboard text={this.createCompilationResultMessage(this.state.placeholderText, this.state.compilationResult)[this.state.menu.active]} onCopy={() => this.setState({copied: true})}>
-                <Button disabled={this.state.loading} primary>
-                  Copy
-                </Button>
-              </CopyToClipboard>
-            </div>
-            <div style={{ "marginTop": "1em" }}>
-              {this.state.placeholderText}
-            </div>
+          <div style={{ "marginTop": "1em" }}>
+            <Button icon primary content='Compile' icon='sync'  disabled={this.state.loading} primary onClick={() => this.onCompileFromRemix()} />
+            <CopyToClipboard text={this.createCompilationResultMessage(this.state.placeholderText, this.state.compilationResult)[this.state.menu.active]} onCopy={() => this.setState({copied: true})}>
+              <Button icon primary content='Copy' icon='copy'  disabled={this.state.loading} primary />
+            </CopyToClipboard>
           </div>
-          <p />
-          <div>
+          <div style={{ "marginTop": "1em" }}>
+            {this.state.placeholderText}
+          </div>
+          <div style={{ "marginTop": "1em" }}>
             {this.renderCompilationResult(this.state.placeholderText, this.state.compilationResult)}
           </div>
         </div>
