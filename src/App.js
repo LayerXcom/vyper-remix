@@ -160,7 +160,7 @@ class App extends Component {
       return {
         bytecode: this.state.compilationResult['bytecode'],
         bytecode_runtime: this.state.compilationResult['bytecode_runtime'],
-        abi: JSON.stringify(this.state.compilationResult['abi']),
+        abi: JSON.stringify(this.state.compilationResult['abi'], null , "\t"),
         ir: this.state.compilationResult['ir']
       }
     } else if(result.status == 'failed' && result.column && result.line) {
@@ -218,7 +218,7 @@ class App extends Component {
           <Menu.Item active={activeItem == 'ir'} name="ir" onClick={this.onClickTab}>LLL</Menu.Item>
         </Menu>
         <Segment attached='bottom'>
-          {(['ir'].indexOf(activeItem) + 1) ? this.renderText(message) : this.renderBytecode(message)}
+          {(['abi', 'ir'].indexOf(activeItem) + 1) ? this.renderText(message) : this.renderBytecode(message)}
         </Segment>
       </div>
     )
