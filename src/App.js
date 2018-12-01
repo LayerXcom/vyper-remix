@@ -22,7 +22,8 @@ class App extends Component {
         bytecode: '',
         bytecode_runtime: '',
         abi: '',
-        ir: ''
+        ir: '',
+        methodIdentifiers: ''
       },
       menu: {
         active: 'bytecode'
@@ -124,6 +125,9 @@ class App extends Component {
     var abi = compileResults['abi']
     var bytecode = compileResults['bytecode'].replace('0x','')
     var deployedBytecode = compileResults['bytecode_runtime'].replace('0x','')
+    var methodIdentifiers = JSON.stringify(compileResults['method_identifiers']).replace(/0x/g,'')
+    console.log(typeof methodIdentifiers)
+    console.log(methodIdentifiers)
     var data = {
       'sources': {},
       'contracts': {}
@@ -149,7 +153,8 @@ class App extends Component {
           },
           "object": deployedBytecode,
           "opcodes": ""
-        }
+        },
+        "methodIdentifiers": methodIdentifiers
       }
     }
       extension.call('compiler', 'sendCompilationResult', [this.state.placeholderText, this.state.vyper, 'vyper', data])
