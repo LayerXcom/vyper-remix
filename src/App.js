@@ -100,12 +100,12 @@ class App extends Component {
           break
 
         default:
-          onCompileFailed({status: 'failed', message: `Unknown error has occurred at "${compileURL}". ${event.target.responseText}`})
+          onCompileFailed({status: 'failed', message: `An error has occurred at "${compileURL}". ${event.target.responseText}`})
           break
       }
     })
     request.addEventListener("error", () => {
-      onCompileFailed({status: 'failed', message: `Network error has occurred at "${compileURL}".`})
+      onCompileFailed({status: 'failed', message: `Error. Wrong code or network error at "${compileURL}".`})
     })
     request.send(JSON.stringify({ "code": result.vyper }))
   }
