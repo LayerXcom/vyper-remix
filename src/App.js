@@ -22,7 +22,8 @@ class App extends Component {
         bytecode: '',
         bytecode_runtime: '',
         abi: '',
-        ir: ''
+        ir: '',
+        methodIdentifiers: ''
       },
       menu: {
         active: 'bytecode'
@@ -63,9 +64,13 @@ class App extends Component {
   }
 
   compile(onCompileSucceeded, onCompileFailed, result) {
+    if (!this.state.placeholderText) {
+      onCompileFailed({status: 'failed', message: "Set your Vyper contract file."})
+      return
+    }
     const extension = this.state.placeholderText.split('.')[1]
     if (extension !== 'vy') {
-      onCompileFailed({status: 'failed', message: `"${extension}" isn't Vyper extension.`})
+      onCompileFailed({status: 'failed', message: "Use extension .vy for Vyper."})
       return
     }
     let compileURL
@@ -124,6 +129,7 @@ class App extends Component {
     var abi = compileResults['abi']
     var bytecode = compileResults['bytecode'].replace('0x','')
     var deployedBytecode = compileResults['bytecode_runtime'].replace('0x','')
+    var methodIdentifiers = JSON.parse(JSON.stringify(compileResults['method_identifiers']).replace(/0x/g,''))
     var data = {
       'sources': {},
       'contracts': {}
@@ -149,7 +155,8 @@ class App extends Component {
           },
           "object": deployedBytecode,
           "opcodes": ""
-        }
+        },
+        "methodIdentifiers": methodIdentifiers
       }
     }
       extension.call('compiler', 'sendCompilationResult', [this.state.placeholderText, this.state.vyper, 'vyper', data])
@@ -250,6 +257,9 @@ class App extends Component {
                 <div>3. Now you can deploy the contract in the Run tab!</div>
               </Popup>
             </Header.Content>
+            <a href="https://github.com/LayerXcom/vyper-remix" target="_blank" align="right" style={{"color": "inherit"}}>
+                <i class="github icon"></i>
+            </a>
           </Header>
 
         </div>
