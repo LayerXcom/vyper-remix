@@ -64,9 +64,13 @@ class App extends Component {
   }
 
   compile(onCompileSucceeded, onCompileFailed, result) {
+    if (!this.state.placeholderText) {
+      onCompileFailed({status: 'failed', message: "Set your Vyper contract file."})
+      return
+    }
     const extension = this.state.placeholderText.split('.')[1]
     if (extension !== 'vy') {
-      onCompileFailed({status: 'failed', message: `"${extension}" isn't Vyper extension.`})
+      onCompileFailed({status: 'failed', message: "Use extension .vy for Vyper."})
       return
     }
     let compileURL
