@@ -125,9 +125,7 @@ class App extends Component {
     var abi = compileResults['abi']
     var bytecode = compileResults['bytecode'].replace('0x','')
     var deployedBytecode = compileResults['bytecode_runtime'].replace('0x','')
-    var methodIdentifiers = JSON.stringify(compileResults['method_identifiers']).replace(/0x/g,'')
-    console.log(typeof methodIdentifiers)
-    console.log(methodIdentifiers)
+    var methodIdentifiers = JSON.parse(JSON.stringify(compileResults['method_identifiers']).replace(/0x/g,''))
     var data = {
       'sources': {},
       'contracts': {}
