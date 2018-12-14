@@ -257,8 +257,8 @@ class App extends Component {
                 <div>3. Now you can deploy the contract in the Run tab!</div>
               </Popup>
             </Header.Content>
-            <a href="https://github.com/LayerXcom/vyper-remix" target="_blank" align="right" style={{"text-decoration": "none"}}>
-                <i aria-hidden="true" class="github icon"></i>
+            <a href="https://github.com/LayerXcom/vyper-remix" target="_blank" align="right" style={{"color": "inherit"}}>
+                <i class="github icon"></i>
             </a>
           </Header>
 
