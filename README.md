@@ -1,6 +1,9 @@
 # vyper-remix
 Vyper Plugin for Remix IDE.
 
+![image](https://user-images.githubusercontent.com/22876645/50035986-bb357980-0048-11e9-8994-91b2518e2aa6.png)
+
+
 ## How to get started
 ### Remote plugin
 This plugin is hosted at https://plugin.vyper.live.
