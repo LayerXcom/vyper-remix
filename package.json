@@ -9,6 +9,7 @@
     "react-dom": "^16.5.2",
     "react-helmet": "^5.2.0",
     "react-scripts": "^2.1.1",
+    "remix-plugin": "0.0.1-alpha.10",
     "semantic-ui-css": "^2.4.0",
     "semantic-ui-react": "^0.82.5",
     "web3": "^1.0.0-beta.36"
