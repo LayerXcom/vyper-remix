@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import "./remix-api";
 import { Button, Radio, Popup, Icon, Menu, Segment, Message, Form, TextArea, Header, Image } from 'semantic-ui-react'
 import { Helmet } from 'react-helmet'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { ballot } from './example-contracts'
-
-var extension = new window.RemixExtension()
+import { IframePlugin } from 'remix-plugin'
+var extension = new IframePlugin()
 
 class App extends Component {
   constructor(props) {
@@ -42,19 +41,20 @@ class App extends Component {
   }
 
   onPluginLoaded() {
-    extension.call('app', 'updateTitle', ['remix-vyper'])
-    extension.call('editor', 'setFile', [`browser/${ballot.name}`, ballot.content])
+    setTimeout(() => {
+      if (extension.source) extension.call('fileManager', 'setFile', [`browser/${ballot.name}`, ballot.content])  
+    }, 1000)
   }
 
   onCompileFromRemix() {
     this.setState({ compilationResult: {status: "inProgress" }})
     const plugin = this
     plugin.result = {}
-    extension.call('editor', 'getCurrentFile', [], (error, result) => {
+    extension.call('fileManager', 'getCurrentFile', [], (error, result) => {
       console.log(error, result)
       plugin.result.placeholderText = result[0]
       plugin.result.copied = false
-      extension.call('editor', 'getFile', result, (error, result) => {
+      extension.call('fileManager', 'getFile', result, (error, result) => {
         console.log(result)
         plugin.result.vyper = result[0]
         plugin.setState(plugin.result)
@@ -113,7 +113,7 @@ class App extends Component {
   highlightErrors(fileName, line, color) {
     const lineColumnPos = {start: {line: line - 1}, end: {line: line - 1}}
     const obj = [JSON.stringify(lineColumnPos), fileName, color]
-    extension.call('editor', 'highlight', obj, (error, result) => {})
+    extension.call('sourceHighlighters', 'highlight', obj, (error, result) => {})
   }
 
   onCompileFailed(compileResults, fileName) {
@@ -125,7 +125,7 @@ class App extends Component {
 
   onCompileSucceeded(compileResults) {
     this.setState({ compilationResult: compileResults })
-    extension.call('editor', 'discardHighlight', [], (error, result) => {})
+    extension.call('sourceHighlighters', 'discardHighlight', [], (error, result) => {})
     var abi = compileResults['abi']
     var bytecode = compileResults['bytecode'].replace('0x','')
     var deployedBytecode = compileResults['bytecode_runtime'].replace('0x','')
@@ -159,7 +159,7 @@ class App extends Component {
         "methodIdentifiers": methodIdentifiers
       }
     }
-      extension.call('compiler', 'sendCompilationResult', [this.state.placeholderText, this.state.vyper, 'vyper', data])
+    extension.emit('compilationFinished', [this.state.placeholderText, this.state.vyper, 'vyper', data])
   }
 
   createCompilationResultMessage(fileName, result) {
